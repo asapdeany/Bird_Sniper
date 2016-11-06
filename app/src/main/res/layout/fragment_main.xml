@@ -57,4 +57,16 @@
             android:id="@+id/roll_test" />
     </LinearLayout>
 
+    <Button
+        android:text="Calibrate"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/calibration_button" />
+
+    <Button
+        android:text="Decalibrate"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/decalibrate_button" />
+
 </LinearLayout>

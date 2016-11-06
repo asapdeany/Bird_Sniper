@@ -1,5 +1,6 @@
 package com.example.deansponholz.bird_sniper;
 
+import android.app.Fragment;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -16,36 +17,37 @@ import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
     TextView yaw_test = null;
     TextView pitch_test = null;
     TextView roll_test = null;
+    Button calibrate_button = null;
+    Button decalibrate_buton = null;
 
-    Sensor accelerometer = null;
-    Sensor gyroscope = null;
-    Sensor magnetic = null;
-
-    SensorManager mSensorManager = null;
     SensorData s = null;
-    long prev_time = 0;
+
 
     RelativeLayout rl = null;
     public double xPos, yPos;
 
-    ArrayList<Float> temparray = new ArrayList<>(2);
+    List<Float> temparray = new ArrayList<Float>();
+
     int i = 0;
 
+    boolean test = true;
 
-
+    float yOffset = 300;
     int size;
-    float tempx;
+    float tempx = 0;
     float x = 260;
     float y = 500;
     int width;
@@ -63,6 +65,25 @@ public class MainActivity extends AppCompatActivity {
         yaw_test = (TextView) findViewById(R.id.yaw_test);
         pitch_test = (TextView) findViewById(R.id.pitch_test);
         roll_test = (TextView) findViewById(R.id.roll_test);
+        calibrate_button = (Button) findViewById(R.id.calibration_button);
+        decalibrate_buton = (Button) findViewById(R.id.decalibrate_button);
+
+
+        calibrate_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                yOffset = y - 292;
+            }
+        });
+
+        decalibrate_buton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                yOffset = 300;
+            }
+        });
+
+
     }
 
 
@@ -71,6 +92,8 @@ public class MainActivity extends AppCompatActivity {
 
         xPos = values[1] * 180/Math.PI;
         yPos = -values[2] * 180/Math.PI;
+
+
         //getValues();
         yaw_test.setText(Double.toString(values[0] * 180/Math.PI));
         pitch_test.setText(Double.toString(values[1] * 180/Math.PI));
@@ -81,69 +104,31 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public class MyDrawView extends View {
+
+        Paint p = new Paint();
+        Bitmap b = BitmapFactory.decodeResource(getResources(), R.drawable.yellowfish);
+
+        Bitmap resized = Bitmap.createScaledBitmap(b, 90, 70, false);
+        Bitmap flipped = Bitmap.createBitmap(flip(resized, 2));
+
         public MyDrawView(Context context){super(context);}
 
         @Override
         public void onDraw(Canvas canvas){
 
-            Paint p = new Paint();
-            Bitmap b = BitmapFactory.decodeResource(getResources(), R.drawable.yellowfish);
-            Matrix matrix = new Matrix();
-            matrix.preScale(1.0f, -1.0f);
-            matrix.postTranslate(canvas.getWidth(), 0);
-
-
-
-
-            Bitmap resized = Bitmap.createScaledBitmap(b, 120, 100, false);
-
-            //p.setColor(Color.MAGENTA);
-            //size = 50;
-            //canvas.drawBitmap(resized, x + 530, y + 300, p);
-
-
-            //canvas.scale(-1f, 1f);
-            //canvas.drawCircle(x + 600, y + 320, size, p);
-
             x = (float) (-xPos*15);
-            //Log.d("x", Float.toString(x));
             y = (float) (yPos * 15);
 
+            Log.d("y", Float.toString(y));
 
-            temparray.add(x);
-
-
-
-/*
-            if (x > 0){
-
-                tempx = x;
-
-                //Log.d("x", Float.toString(tempx));
-                canvas.drawBitmap(flip(resized ,2), x + 530, y + 300, p);
+            if (x > tempx) {
+                canvas.drawBitmap(flipped, x + 530, y + yOffset, p);
                 tempx = x;
             }
-            else if (x < 0){
-                canvas.drawBitmap(resized, x + 530, y + 300, p);
-            }
-            */
 
-            i++;
-
-            if (i % 2 == 0){
-                float testfloat = temparray.get(0);
-                float testfloat2 = temparray.get(1);
-
-                if (testfloat > testfloat2){
-                    Log.d("x", Float.toString(testfloat));
-                    Log.d("x2", Float.toString(testfloat2));
-                    canvas.drawBitmap(flip(resized ,2), x + 530, y + 300, p);
-                    temparray.clear();
-                }
-                else {
-                    //canvas.drawBitmap(flip(resized ,2), x + 530, y + 300, p);
-                    temparray.clear();
-                }
+            else if (x < tempx){
+                canvas.drawBitmap(resized, x + 530, y + yOffset, p);
+                tempx = x;
             }
 
 
@@ -173,10 +158,11 @@ public class MainActivity extends AppCompatActivity {
             */
 
 
+
             invalidate();
 
-
         }
+
 
     }
 
