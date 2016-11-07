@@ -14,19 +14,20 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:id="@+id/imageView2"
-        android:background="@drawable/background_normal"
         android:layout_alignParentTop="true"
-        android:layout_alignParentStart="true" />
+        android:layout_alignParentStart="true"
+        android:background="@drawable/ocean_normal" />
 
     <fragment
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        class="com.example.deansponholz.bird_sniper.MainFragment"
+        class="com.example.deansponholz.bird_sniper.HUDFragment"
         tools:layout="@layout/fragment_main"
-        android:id="@+id/mainFragment"
+        android:id="@+id/HUDFragment"
         android:layout_alignParentTop="true"
         android:layout_alignParentStart="true">
     </fragment>
+
     <!--
     <com.example.deansponholz.bird_sniper.Rectangle
         android:layout_width="wrap_content"

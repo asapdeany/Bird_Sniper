@@ -97,11 +97,13 @@ public class SensorData implements SensorEventListener {
 
     private int THRESHOLD;
     private long prev_time = 0;
-    private final MainActivity ma;
+    //private final MainActivity ma;
+    private final HUDFragment hudFragment;
 
-    public SensorData(SensorManager sm, MainActivity ma){
+    public SensorData(SensorManager sm, HUDFragment hudFragment){
 
-        this.ma = ma;
+        //this.ma = ma;
+        this.hudFragment = hudFragment;
         mSensorManager = sm;
         xy[0] = y;
         xy[1] = x;
@@ -167,7 +169,10 @@ public class SensorData implements SensorEventListener {
         yPos = fusedOrientation[2] * 180/Math.PI;
         y= (float) (-xPos*15);
         x= (float) (yPos*15);
-        ma.setTextViewValue(fusedOrientation);
+        //ma.setTextViewValue(fusedOrientation);
+        //final hudFragment = new HUDFragment();
+        hudFragment.setTextViewValue(fusedOrientation);
+        //ma.setTextViewValue(fusedOrientation);
         //ma.setValues(xPos);
 
     }
@@ -383,7 +388,7 @@ public class SensorData implements SensorEventListener {
             //draw a circle at the point designated based on accelerometer data and previous points with a specified size and a color P
             canvas.drawCircle(x + 340, y + 600, size, p);
             //Move ball based on where ball is and accelerometer data
-            Log.d("xxxx",Double.toString(xPos));
+            //Log.d("xxxx",Double.toString(xPos));
             y= (float) (-xPos*15);
             //Log.d("x",Float.toString(x));
             x= (float) (yPos*15);

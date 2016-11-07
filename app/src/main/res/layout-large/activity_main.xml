@@ -20,7 +20,7 @@
     <fragment
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        class="com.example.deansponholz.bird_sniper.MainFragment"
+        class="com.example.deansponholz.bird_sniper.HUDFragment"
         tools:layout="@layout/fragment_main"
         android:id="@+id/mainFragment"
         android:layout_alignParentTop="true"
