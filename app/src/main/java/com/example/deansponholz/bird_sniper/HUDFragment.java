@@ -10,15 +10,18 @@ import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.PathMeasure;
+import android.graphics.Point;
 import android.graphics.PorterDuff;
 import android.graphics.Rect;
 import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.util.Log;
+import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -45,7 +48,9 @@ public class HUDFragment extends Fragment {
 
     public double xPos, yPos;
 
-    float yOffset = 300;
+    float yOffset;
+    float xOffset;
+
 
     float fishX;
     float fishY;
@@ -56,13 +61,17 @@ public class HUDFragment extends Fragment {
 
     public Rect sprite1Bounds = new Rect(0,0,0,0);
 
+    Display display;
+    WindowManager wm;
+    Point size;
     int width;
     int height;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_main, container, false);
-
+        wm = (WindowManager) root.getContext().getSystemService(Context.WINDOW_SERVICE);
+        offSetCalculator();
         RelativeLayout test = (RelativeLayout) root.findViewById(R.id.test);
         ScopeView myDrawing = new ScopeView(this.getActivity());
         fishDrawView fishDrawView = new fishDrawView(this.getActivity());
@@ -90,7 +99,7 @@ public class HUDFragment extends Fragment {
         decalibrate_buton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                yOffset = 300;
+                yOffset = height/2;
             }
         });
 
@@ -166,9 +175,10 @@ public class HUDFragment extends Fragment {
 
 
             animPath = randomPath();
-            pathMeasure = new PathMeasure(randomPath(), false);
+            pathMeasure = new PathMeasure(animPath, false);
             speed = pathMeasure.getLength()/1000;
             pathLength = pathMeasure.getLength() / 2;
+
 
 
             step = 1;
@@ -179,12 +189,13 @@ public class HUDFragment extends Fragment {
             matrix = new Matrix();
 
             shipPath = new Path();
-            shipPath.moveTo(1200, 80);
-            shipPath.lineTo(0, 80);
+            shipPath.moveTo(width, (float) (height * 0.1));
+            shipPath.lineTo(0, (float) (height * 0.1));
             shipPath.close();
 
             shipPathMeasure = new PathMeasure(shipPath, false);
             shipSpeed = shipPathMeasure.getLength()/5000;
+            Log.d("ship speed", Float.toString(shipSpeed));
             shipPathLength = shipPathMeasure.getLength();
             shippos = new float[2];
             shiptan = new float[2];
@@ -198,8 +209,10 @@ public class HUDFragment extends Fragment {
             //http://android-er.blogspot.com/2014/05/animation-of-moving-bitmap-along-path.html
 
 
-            //canvas.drawPath(animPath, paint);
+            canvas.drawPath(animPath, paint);
             canvas.drawPath(shipPath, paint);
+
+
             if(distance < pathLength){
                 pathMeasure.getPosTan(distance, pos, tan);
                 distance += speed;
@@ -219,10 +232,13 @@ public class HUDFragment extends Fragment {
             }else{
 
                 distance = 0;
+
                 animPath = randomPath();
-                pathMeasure = new PathMeasure(randomPath(), false);
+                pathMeasure = new PathMeasure(animPath, false);
                 speed = pathMeasure.getLength()/1000;
                 pathLength = pathMeasure.getLength() / 2;
+
+
                 //Log.d("end", "killme");
             }
 
@@ -255,15 +271,36 @@ public class HUDFragment extends Fragment {
 
         Random r = new Random();
         Path animPath = new Path();
-        int Low = 90;
-        int High = 700;
-        int randSpawn = r.nextInt(High-Low) + Low;
-        int randEnd = r.nextInt(High-Low) + Low;
+        float Low = (float) (height * 0.90);
+
+        float High = (float) (height * 0.15);
+        int Low1 = Math.round(Low);
+        int High1 = Math.round(High);
+
+
+        int randSpawn = r.nextInt(Low1-High1) + High1;
+        int randEnd = r.nextInt(Low1-High1) + High1;
+        Log.d("start", Integer.toString(randSpawn));
+        Log.d("end", Integer.toString(randEnd));
         animPath.moveTo(0, randSpawn);
-        animPath.lineTo(1250, randEnd);
+        animPath.lineTo(width, randEnd);
+
         animPath.close();
 
         return animPath;
+    }
+
+    public void offSetCalculator(){
+
+        display = wm.getDefaultDisplay();
+        size = new Point();
+        display.getSize(size);
+        width =  size.x;
+        height = size.y;
+        yOffset = height / 2;
+        xOffset = width / 2;
+        Log.d("screenWidth", Integer.toString(width));
+        Log.d("screenHeight", Integer.toString(height));
     }
 
 
@@ -289,7 +326,7 @@ public class HUDFragment extends Fragment {
 
 
 
-            canvas.drawCircle(x + 530, y+ yOffset, 50, p);
+            canvas.drawCircle(x + xOffset, y+ yOffset, 50, p);
 
 
 
