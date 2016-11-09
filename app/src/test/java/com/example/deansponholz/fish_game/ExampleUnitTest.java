@@ -1,4 +1,4 @@
-package com.example.deansponholz.bird_sniper;
+package com.example.deansponholz.fish_game;
 
 import org.junit.Test;
 

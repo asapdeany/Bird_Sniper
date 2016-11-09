@@ -5,7 +5,7 @@
     android:id="@+id/activity_main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.deansponholz.bird_sniper.MainActivity"
+    tools:context="com.example.deansponholz.fish_game.MainActivity"
     android:background="@android:color/background_light">
 
 
@@ -15,19 +15,19 @@
         android:id="@+id/imageView2"
         android:layout_alignParentTop="true"
         android:layout_alignParentStart="true"
-        android:background="@drawable/background_large" />
+        android:background="@drawable/ocean_large" />
 
     <fragment
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        class="com.example.deansponholz.bird_sniper.HUDFragment"
+        class="com.example.deansponholz.fish_game.HUDFragment"
         tools:layout="@layout/fragment_main"
         android:id="@+id/mainFragment"
         android:layout_alignParentTop="true"
         android:layout_alignParentStart="true">
     </fragment>
 
-    <com.example.deansponholz.bird_sniper.Rectangle
+    <com.example.deansponholz.fish_game.Rectangle
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/test_rectangle"

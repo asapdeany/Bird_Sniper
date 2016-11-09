@@ -1,4 +1,4 @@
-package com.example.deansponholz.bird_sniper;
+package com.example.deansponholz.fish_game;
 
 import android.app.Fragment;
 import android.content.Context;
@@ -11,11 +11,10 @@ import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.PathMeasure;
 import android.graphics.Point;
-import android.graphics.PorterDuff;
 import android.graphics.Rect;
 import android.hardware.SensorManager;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Display;
 import android.view.LayoutInflater;
@@ -27,9 +26,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import java.util.Random;
-
-import static android.R.attr.animationDuration;
-import static android.content.Context.SENSOR_SERVICE;
 
 /**
  * Created by deansponholz on 11/3/16.
@@ -52,12 +48,13 @@ public class HUDFragment extends Fragment {
     float xOffset;
 
 
-    float fishX;
-    float fishY;
+    float fishX, fishY;
+    float pirateShipX, pirateShipY;
+    float hookX, hookY;
+    float shipSpawnY;
 
     float tempx = 0;
-    float x = 260;
-    float y = 500;
+
 
     public Rect sprite1Bounds = new Rect(0,0,0,0);
 
@@ -67,16 +64,24 @@ public class HUDFragment extends Fragment {
     int width;
     int height;
 
+    int deviceCalibrate;
+
+    Bitmap hook;
+    // type definition
+    public static final int FLIP_VERTICAL = 1;
+    public static final int FLIP_HORIZONTAL = 2;
+
+
+
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_main, container, false);
         wm = (WindowManager) root.getContext().getSystemService(Context.WINDOW_SERVICE);
         offSetCalculator();
         RelativeLayout test = (RelativeLayout) root.findViewById(R.id.test);
-        ScopeView myDrawing = new ScopeView(this.getActivity());
-        fishDrawView fishDrawView = new fishDrawView(this.getActivity());
-        test.addView(myDrawing);
-        test.addView(fishDrawView);
+        HUDDrawView hudDrawView = new HUDDrawView(this.getActivity());
+        test.addView(hudDrawView);
 
 
 
@@ -92,7 +97,7 @@ public class HUDFragment extends Fragment {
         calibrate_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                yOffset = y - 292;
+                yOffset = hookY - deviceCalibrate;
             }
         });
 
@@ -113,6 +118,7 @@ public class HUDFragment extends Fragment {
         yPos = -values[2] * 180/Math.PI;
 
 
+
         //getValues();
         yaw_test.setText(Double.toString(values[0] * 180/Math.PI));
         pitch_test.setText(Double.toString(values[1] * 180/Math.PI));
@@ -121,138 +127,195 @@ public class HUDFragment extends Fragment {
         //yaw_test.setX((float)xPos);
 
     }
-    public class fishDrawView extends View{
+    public class HUDDrawView extends View{
 
-        Paint paint = new Paint();
-        Bitmap b = BitmapFactory.decodeResource(getResources(), R.drawable.yellowfish);
+
+
+        //BitMaps
+        Bitmap fish = BitmapFactory.decodeResource(getResources(), R.drawable.yellowfish);
+        Bitmap hook = BitmapFactory.decodeResource(getResources(), R.drawable.hook);
+
+        Bitmap resizedFish = Bitmap.createScaledBitmap(fish, 90, 70, false);
+        Bitmap flippedFish = Bitmap.createBitmap(flip(resizedFish, 2));
+
         Bitmap pship = BitmapFactory.decodeResource(getResources(), R.drawable.pirateship_normal);
-
-        Bitmap resized = Bitmap.createScaledBitmap(b, 90, 70, false);
-        Bitmap flipped = Bitmap.createBitmap(flip(resized, 2));
         Bitmap pirateShip = Bitmap.createBitmap(pship);
 
-        Random r = new Random();
 
-        int bm_offsetX, bm_offsetY;
+        //onDraw
+        Canvas canvas;
+        Paint paint = new Paint();
+
+        //Bitmap Positions
+        int fish_offsetX, fish_offsetY;
         int ship_offsetX, ship_offSetY;
 
+
+        //HookPath
+        Path hookPath;
+        PathMeasure hookPathMeasure;
+        float[] hookPos;
+        float[] hookTan;
+        Matrix hookMatrix;
+
+
+        //FishPath
         Path animPath;
-        Path shipPath;
         PathMeasure pathMeasure;
-        PathMeasure shipPathMeasure;
-        float pathLength, shipPathLength;
-
-        float step, shipStep;   //distance each step
-        float distance, shipdistance;  //distance moved
-
+        float pathLength;
+        float step;
+        float distance;
         float[] pos;
         float[] tan;
-        float speed, shipSpeed;
-        float[] shippos;
-        float[] shiptan;
+        float speed;
         Matrix matrix;
-        Matrix shipMatrix;
-        Canvas canvas;
 
-        public fishDrawView(Context context){super(context);
+        //ShipPath
+        Path shipPath;
+        PathMeasure shipPathMeasure;
+        float shipPathLength;
+        float shipStep;
+        float shipDistance;
+        float[] shipPos;
+        float[] shipTan;
+        float shipSpeed;
+        Matrix shipMatrix;
+
+
+        public HUDDrawView(Context context){super(context);
         initMyView();
         }
 
         public void initMyView(){
+
+
+            //Drawing Tools
             canvas = new Canvas();
             paint = new Paint();
             paint.setColor(Color.WHITE);
             paint.setStrokeWidth(2);
             paint.setStyle(Paint.Style.STROKE);
 
-
-            bm_offsetX = resized.getWidth()/2;
-            bm_offsetY = resized.getHeight()/2;
-
+            //initial Bitmap Positions
+            fish_offsetX = resizedFish.getWidth()/2;
+            fish_offsetY = resizedFish.getHeight()/2;
             ship_offsetX = pirateShip.getWidth()/2;
             ship_offSetY = pirateShip.getHeight()/2;
 
 
+            //hookPath initialization
+            hookPath = new Path();
+            hookPath.moveTo(300, 400);
+            hookPath.lineTo(200, 500);
+            hookPath.close();
+            hookMatrix = new Matrix();
 
+
+
+            //hookPath.lineTo();
+            //fishPath initialization
             animPath = randomPath();
             pathMeasure = new PathMeasure(animPath, false);
             speed = pathMeasure.getLength()/1000;
             pathLength = pathMeasure.getLength() / 2;
-
-
-
             step = 1;
             distance = 0;
             pos = new float[2];
             tan = new float[2];
-
             matrix = new Matrix();
 
-            shipPath = new Path();
-            shipPath.moveTo(width, (float) (height * 0.1));
-            shipPath.lineTo(0, (float) (height * 0.1));
-            shipPath.close();
 
+            //shipPath initialization
+            shipPath = new Path();
+            shipPath.moveTo(width, shipSpawnY);
+            shipPath.lineTo(0, shipSpawnY);
+            shipPath.close();
             shipPathMeasure = new PathMeasure(shipPath, false);
             shipSpeed = shipPathMeasure.getLength()/5000;
             Log.d("ship speed", Float.toString(shipSpeed));
             shipPathLength = shipPathMeasure.getLength();
-            shippos = new float[2];
-            shiptan = new float[2];
-            shipdistance = 0;
+            shipPos = new float[2];
+            shipTan = new float[2];
+            shipDistance = 0;
             shipMatrix = new Matrix();
         }
 
 
+        public void onDrawFishLine(Canvas canvas){
+
+
+
+        }
+
         @Override
         public void onDraw(Canvas canvas){
             //http://android-er.blogspot.com/2014/05/animation-of-moving-bitmap-along-path.html
+
+            hookX = (float) (-xPos*15) + xOffset;
+            hookY = (float) (yPos * 15) + yOffset;
+            canvas.drawBitmap(hook, hookX, hookY, paint);
+
 
 
             canvas.drawPath(animPath, paint);
             canvas.drawPath(shipPath, paint);
 
 
+
+            //canvas.drawArc(hookX - 50, pirateShipY, pirateShipX - 40, hookX, (float)(Math.atan2(shipTan[1], shipTan[0])*180.0/Math.PI) - 70, pirateShipX, false, paint);
+
+            canvas.drawLine(hookX + 85, hookY + 40, pirateShipX + ship_offsetX, pirateShipY + ship_offSetY, paint);
+            //hookMatrix.reset();
+            //hookMatrix.postRotate((float)(Math.atan2(shipTan[1], shipTan[0])*180.0/Math.PI), hookX, hookY);
+            //hookMatrix.postTranslate(pirateShipY, pirateShipY);
+            //hookPath.transform(hookMatrix);
+            //canvas.drawPath(hookPath, paint);
+
+
+
+
+
+            //send fish on Path
             if(distance < pathLength){
                 pathMeasure.getPosTan(distance, pos, tan);
                 distance += speed;
 
                 matrix.reset();
                 float degrees = (float)(Math.atan2(tan[1], tan[0])*180.0/Math.PI);
-                fishX = pos[0]-bm_offsetX;
-                fishY = pos[1]-bm_offsetY;
+                fishX = pos[0]-fish_offsetX;
+                fishY = pos[1]-fish_offsetY;
+                matrix.postRotate(degrees);
                 matrix.postTranslate(fishX, fishY);
-                canvas.drawBitmap(flipped, matrix, null);
-                sprite1Bounds = new Rect((int)(fishX) + 10, (int)fishY + 10, (int) fishX +flipped.getWidth() - 10, (int)fishY + flipped.getHeight() - 10);
 
+                canvas.drawBitmap(flippedFish, matrix, null);
+                sprite1Bounds = new Rect((int)(fishX) + 10, (int)fishY + 10, (int) fishX +flippedFish.getWidth() - 10, (int)fishY + flippedFish.getHeight() - 10);
                 canvas.drawRect(sprite1Bounds, paint);
                 //Log.d("end", Float.toString(fishX));
-
                 distance += step;
-            }else{
-
+            }
+            else{
+                //make new random Path
                 distance = 0;
-
                 animPath = randomPath();
                 pathMeasure = new PathMeasure(animPath, false);
                 speed = pathMeasure.getLength()/1000;
                 pathLength = pathMeasure.getLength() / 2;
-
-
                 //Log.d("end", "killme");
             }
 
-            if(shipdistance < shipPathLength){
-                shipPathMeasure.getPosTan(shipdistance, shippos, shiptan);
-                shipdistance += shipSpeed;
-
+            if(shipDistance < shipPathLength){
+                shipPathMeasure.getPosTan(shipDistance, shipPos, shipTan);
+                shipDistance += shipSpeed;
                 shipMatrix.reset();
-
-                shipMatrix.postTranslate(shippos[0]-ship_offsetX, shippos[1]-ship_offSetY);
+                pirateShipX = shipPos[0]-ship_offsetX;
+                pirateShipY = shipPos[1]-ship_offSetY;
+                shipMatrix.postTranslate(pirateShipX, pirateShipY);
                 canvas.drawBitmap(pirateShip, shipMatrix, null);
-                shipdistance += shipStep;
-            }else{
-                shipdistance = 0;
+
+                shipDistance += shipStep;
+            }
+            else{
+                shipDistance = 0;
                 //Log.d("end", "killme");
             }
 
@@ -260,77 +323,7 @@ public class HUDFragment extends Fragment {
             //http://stackoverflow.com/questions/5914911/pixel-perfect-collision-detection-android
 
 
-
-
-            invalidate();
-        }
-
-    }
-
-    public Path randomPath(){
-
-        Random r = new Random();
-        Path animPath = new Path();
-        float Low = (float) (height * 0.90);
-
-        float High = (float) (height * 0.15);
-        int Low1 = Math.round(Low);
-        int High1 = Math.round(High);
-
-
-        int randSpawn = r.nextInt(Low1-High1) + High1;
-        int randEnd = r.nextInt(Low1-High1) + High1;
-        Log.d("start", Integer.toString(randSpawn));
-        Log.d("end", Integer.toString(randEnd));
-        animPath.moveTo(0, randSpawn);
-        animPath.lineTo(width, randEnd);
-
-        animPath.close();
-
-        return animPath;
-    }
-
-    public void offSetCalculator(){
-
-        display = wm.getDefaultDisplay();
-        size = new Point();
-        display.getSize(size);
-        width =  size.x;
-        height = size.y;
-        yOffset = height / 2;
-        xOffset = width / 2;
-        Log.d("screenWidth", Integer.toString(width));
-        Log.d("screenHeight", Integer.toString(height));
-    }
-
-
-    public class ScopeView extends View {
-
-        Paint p = new Paint();
-        //Bitmap b = BitmapFactory.decodeResource(getResources(), R.drawable.yellowfish);
-
-        //Bitmap resized = Bitmap.createScaledBitmap(b, 90, 70, false);
-        //Bitmap flipped = Bitmap.createBitmap(flip(resized, 2));
-
-        public ScopeView(Context context){super(context);}
-
-        @Override
-        public void onDraw(Canvas canvas){
-            p.setColor(Color.YELLOW);
-            p.setStyle(Paint.Style.STROKE);
-            p.setStrokeWidth(2.5f);
-
-            x = (float) (-xPos*15);
-            y = (float) (yPos * 15);
-
-
-
-
-            canvas.drawCircle(x + xOffset, y+ yOffset, 50, p);
-
-
-
-            /*
+ /*
             if (x > tempx) {
                 canvas.drawBitmap(flipped, x + 530, y + yOffset, p);
                 tempx = x;
@@ -368,18 +361,81 @@ public class HUDFragment extends Fragment {
             }
             */
 
-
-
             invalidate();
-
         }
-
 
     }
 
-    // type definition
-    public static final int FLIP_VERTICAL = 1;
-    public static final int FLIP_HORIZONTAL = 2;
+    public Path randomPath(){
+
+        Random r = new Random();
+        Path animPath = new Path();
+        float top = (float) (height * 0.90);
+
+        float bottom = (float) (height * 0.15);
+        int topRound = Math.round(top);
+        int bottomRound = Math.round(bottom);
+
+
+        int randSpawn = r.nextInt(topRound-bottomRound) + bottomRound;
+        int randEnd = r.nextInt(topRound-bottomRound) + bottomRound;
+        Log.d("start", Integer.toString(randSpawn));
+        Log.d("end", Integer.toString(randEnd));
+        animPath.moveTo(0, randSpawn);
+        animPath.lineTo(width, randEnd);
+
+        animPath.close();
+
+        return animPath;
+    }
+
+    public void offSetCalculator(){
+
+
+        //Screen Inches
+        DisplayMetrics dm = new DisplayMetrics();
+        wm.getDefaultDisplay().getMetrics(dm);
+        int widthtest=dm.widthPixels;
+        int heighttest=dm.heightPixels;
+        int dens=dm.densityDpi;
+        double wi=(double)widthtest/(double)dens;
+        double hi=(double)heighttest/(double)dens;
+        double xtest = Math.pow(wi,2);
+        double ytest = Math.pow(hi,2);
+        double screenInches = Math.sqrt(xtest+ytest);
+
+
+        //screen Pixels
+        display = wm.getDefaultDisplay();
+        size = new Point();
+        display.getSize(size);
+        width =  size.x;
+        height = size.y;
+
+
+        if (screenInches > 6.0){
+            Log.d("BigDevice", Double.toString(screenInches));
+            Log.d("screenWidth", Integer.toString(width));
+            Log.d("screenHeight", Integer.toString(height));
+            shipSpawnY = (float)(height * 0.2);
+            deviceCalibrate = 700;
+
+        }
+        if (screenInches < 6.0){
+            Log.d("SmallDevice", Double.toString(screenInches));
+            Log.d("screenWidth", Integer.toString(width));
+            Log.d("screenHeight", Integer.toString(height));
+            shipSpawnY = (float)(height * 0.1);
+            deviceCalibrate = 292;
+        }
+
+
+        yOffset = (height / 2) - 60;
+        xOffset = (width / 2) - 65;
+
+    }
+
+
 
     public Bitmap flip(Bitmap src, int type) {
         // create new matrix for transformation

@@ -1,17 +1,11 @@
-package com.example.deansponholz.bird_sniper;
+package com.example.deansponholz.fish_game;
 
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.Rect;
-import android.hardware.SensorManager;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.View;
-
-import static android.content.ContentValues.TAG;
-import static android.content.Context.SENSOR_SERVICE;
 
 /**
  * Created by deansponholz on 11/3/16.

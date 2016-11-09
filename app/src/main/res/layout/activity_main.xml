@@ -6,7 +6,7 @@
     android:id="@+id/activity_main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.deansponholz.bird_sniper.MainActivity"
+    tools:context="com.example.deansponholz.fish_game.MainActivity"
     android:background="@android:color/background_light">
 
 
@@ -21,7 +21,7 @@
     <fragment
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        class="com.example.deansponholz.bird_sniper.HUDFragment"
+        class="com.example.deansponholz.fish_game.HUDFragment"
         tools:layout="@layout/fragment_main"
         android:id="@+id/HUDFragment"
         android:layout_alignParentTop="true"

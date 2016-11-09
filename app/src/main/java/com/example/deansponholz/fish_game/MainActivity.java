@@ -1,11 +1,11 @@
-package com.example.deansponholz.bird_sniper;
+package com.example.deansponholz.fish_game;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.view.Display;
 
 
 public class MainActivity extends AppCompatActivity {
+
 
 
     @Override

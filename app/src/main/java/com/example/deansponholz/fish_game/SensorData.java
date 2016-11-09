@@ -1,8 +1,6 @@
-package com.example.deansponholz.bird_sniper;
+package com.example.deansponholz.fish_game;
 
-import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -11,19 +9,13 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Handler;
-import android.util.Log;
 import android.view.View;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 
-import java.lang.reflect.Array;
 import java.text.DecimalFormat;
-import java.util.Observable;
 import java.util.Timer;
 import java.util.TimerTask;
-
-import static android.content.ContentValues.TAG;
-import static android.content.Context.SENSOR_SERVICE;
 
 
 /**
