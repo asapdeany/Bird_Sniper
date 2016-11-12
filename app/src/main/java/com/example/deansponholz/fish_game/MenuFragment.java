@@ -16,19 +16,24 @@ import android.widget.Button;
 public class MenuFragment extends Fragment {
 
     Button play_button = null;
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_menu, container, false);
         this.play_button = (Button) root.findViewById(R.id.play_button);
 
+
         play_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getActivity(), MainActivity.class);
+                //possibly calibrate
+                Intent intent = new Intent(getActivity(), CalibrationActivity.class);
                 getActivity().startActivity(intent);
             }
         });
+
+
         return root;
     }
 }

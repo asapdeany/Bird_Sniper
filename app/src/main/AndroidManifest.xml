@@ -21,6 +21,10 @@
             android:screenOrientation="landscape">
 
         </activity>
+        <activity android:name="com.example.deansponholz.fish_game.CalibrationActivity"
+            android:screenOrientation="landscape">
+
+        </activity>
     </application>
 
 </manifest>

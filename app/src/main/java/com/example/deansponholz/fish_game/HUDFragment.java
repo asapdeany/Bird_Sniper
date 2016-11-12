@@ -2,6 +2,7 @@ package com.example.deansponholz.fish_game;
 
 import android.app.Fragment;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -36,16 +37,9 @@ public class HUDFragment extends Fragment {
     TextView yaw_test = null;
     TextView pitch_test = null;
     TextView roll_test = null;
-    Button calibrate_button = null;
+    Button menu_Button = null;
     Button decalibrate_buton = null;
 
-    SensorData s = null;
-
-
-    public double xPos, yPos;
-
-    float yOffset;
-    float xOffset;
 
 
     float fishX, fishY;
@@ -53,7 +47,8 @@ public class HUDFragment extends Fragment {
     float hookX, hookY;
     float shipSpawnY;
 
-    float tempx = 0;
+
+    private double yOffset;
 
 
     public Rect sprite1Bounds = new Rect(0,0,0,0);
@@ -66,10 +61,11 @@ public class HUDFragment extends Fragment {
 
     int deviceCalibrate;
 
-    Bitmap hook;
     // type definition
     public static final int FLIP_VERTICAL = 1;
     public static final int FLIP_HORIZONTAL = 2;
+    public SensorHandler sensorHandler = null;
+    private CalibrationFragment calibrationFragment = null;
 
 
 
@@ -78,33 +74,30 @@ public class HUDFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_main, container, false);
         wm = (WindowManager) root.getContext().getSystemService(Context.WINDOW_SERVICE);
+
+        sensorHandler = new SensorHandler(root.getContext());
+
+        calibrationFragment = new CalibrationFragment();
         offSetCalculator();
-        RelativeLayout test = (RelativeLayout) root.findViewById(R.id.test);
+        RelativeLayout fragment_main = (RelativeLayout) root.findViewById(R.id.fragment_main);
         HUDDrawView hudDrawView = new HUDDrawView(this.getActivity());
-        test.addView(hudDrawView);
+        fragment_main.addView(hudDrawView);
 
 
 
-        s = new SensorData((SensorManager) getActivity().getSystemService(Context.SENSOR_SERVICE), this);
+        //s = new SensorData((SensorManager) getActivity().getSystemService(Context.SENSOR_SERVICE), this);
 
         this.yaw_test = (TextView) root.findViewById(R.id.yaw_test);
-        pitch_test = (TextView) root.findViewById(R.id.pitch_test);
-        roll_test = (TextView) root.findViewById(R.id.roll_test);
-        calibrate_button = (Button) root.findViewById(R.id.calibration_button);
-        decalibrate_buton = (Button) root.findViewById(R.id.decalibrate_button);
+        this.pitch_test = (TextView) root.findViewById(R.id.pitch_test);
+        this.roll_test = (TextView) root.findViewById(R.id.roll_test);
+        this.menu_Button = (Button) root.findViewById(R.id.menu_button);
 
 
-        calibrate_button.setOnClickListener(new View.OnClickListener() {
+        menu_Button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                yOffset = hookY - deviceCalibrate;
-            }
-        });
-
-        decalibrate_buton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                yOffset = height/2;
+                Intent intent = new Intent(getActivity(), MenuActivity.class);
+                getActivity().startActivity(intent);
             }
         });
 
@@ -112,21 +105,6 @@ public class HUDFragment extends Fragment {
         return root;
     }
 
-    protected void setTextViewValue(float[] values){
-
-        xPos = values[1] * 180/Math.PI;
-        yPos = -values[2] * 180/Math.PI;
-
-
-
-        //getValues();
-        yaw_test.setText(Double.toString(values[0] * 180/Math.PI));
-        pitch_test.setText(Double.toString(values[1] * 180/Math.PI));
-        roll_test.setText(Double.toString(values[2] * 180/Math.PI));
-        //Log.d("bro", ( Double.toString(yaw)));
-        //yaw_test.setX((float)xPos);
-
-    }
     public class HUDDrawView extends View{
 
 
@@ -251,14 +229,22 @@ public class HUDFragment extends Fragment {
         public void onDraw(Canvas canvas){
             //http://android-er.blogspot.com/2014/05/animation-of-moving-bitmap-along-path.html
 
-            hookX = (float) (-xPos*15) + xOffset;
-            hookY = (float) (yPos * 15) + yOffset;
+            yaw_test.setText(Double.toString(sensorHandler.zPos));
+            pitch_test.setText(Double.toString(sensorHandler.xPos));
+            roll_test.setText(Double.toString(sensorHandler.yPos));
+            hookX = (float) (-sensorHandler.xPos*15) + calibrationFragment.xOffset;
+            hookY = (float) (sensorHandler.yPos * 15) + calibrationFragment.yOffset;
+
+
+
+
             canvas.drawBitmap(hook, hookX, hookY, paint);
 
 
 
             canvas.drawPath(animPath, paint);
             canvas.drawPath(shipPath, paint);
+            //Log.d("test", Double.toString(sensorHandler.xPos));
 
 
 
@@ -379,8 +365,8 @@ public class HUDFragment extends Fragment {
 
         int randSpawn = r.nextInt(topRound-bottomRound) + bottomRound;
         int randEnd = r.nextInt(topRound-bottomRound) + bottomRound;
-        Log.d("start", Integer.toString(randSpawn));
-        Log.d("end", Integer.toString(randEnd));
+        //Log.d("start", Integer.toString(randSpawn));
+        //Log.d("end", Integer.toString(randEnd));
         animPath.moveTo(0, randSpawn);
         animPath.lineTo(width, randEnd);
 
@@ -418,20 +404,14 @@ public class HUDFragment extends Fragment {
             Log.d("screenWidth", Integer.toString(width));
             Log.d("screenHeight", Integer.toString(height));
             shipSpawnY = (float)(height * 0.2);
-            deviceCalibrate = 700;
-
         }
         if (screenInches < 6.0){
             Log.d("SmallDevice", Double.toString(screenInches));
             Log.d("screenWidth", Integer.toString(width));
             Log.d("screenHeight", Integer.toString(height));
             shipSpawnY = (float)(height * 0.1);
-            deviceCalibrate = 292;
+
         }
-
-
-        yOffset = (height / 2) - 60;
-        xOffset = (width / 2) - 65;
 
     }
 

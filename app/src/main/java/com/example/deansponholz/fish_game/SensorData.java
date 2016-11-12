@@ -76,14 +76,17 @@ public class SensorData implements SensorEventListener {
     private Timer fuseTimer = new Timer();
 
     //private final MainActivity ma;
-    private final HUDFragment hudFragment;
+    //private final HUDFragment hudFragment;
+
+    private final SensorHandler sensorHandler;
 
     //create sensor handler class
     //use sensor handler class as paramter instead of hud fragment
-    public SensorData(SensorManager sm, HUDFragment hudFragment){
+    public SensorData(SensorManager sm, SensorHandler sensorHandler){
 
         //this.ma = ma;
-        this.hudFragment = hudFragment;
+        this.sensorHandler = sensorHandler;
+        //this.hudFragment = hudFragment;
         mSensorManager = sm;
         xy[0] = y;
         xy[1] = x;
@@ -151,7 +154,8 @@ public class SensorData implements SensorEventListener {
         x= (float) (yPos*15);
         //ma.setTextViewValue(fusedOrientation);
         //final hudFragment = new HUDFragment();
-        hudFragment.setTextViewValue(fusedOrientation);
+        sensorHandler.setValues(fusedOrientation);
+        //hudFragment.setTextViewValue(fusedOrientation);
         //ma.setTextViewValue(fusedOrientation);
         //ma.setValues(xPos);
 
