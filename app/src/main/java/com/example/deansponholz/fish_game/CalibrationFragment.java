@@ -7,10 +7,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.Matrix;
 import android.graphics.Paint;
-import android.graphics.Path;
-import android.graphics.PathMeasure;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.os.Bundle;
@@ -25,7 +22,6 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
 
 
 /**
@@ -86,7 +82,7 @@ public class CalibrationFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 Log.d("yOffsetbefore", Double.toString(yOffset));
-                Intent intent = new Intent(getActivity(), MainActivity.class);
+                Intent intent = new Intent(getActivity(), HUDActivity.class);
                 getActivity().startActivity(intent);
             }
         });

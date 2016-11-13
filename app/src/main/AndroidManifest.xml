@@ -17,12 +17,15 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="com.example.deansponholz.fish_game.MainActivity"
+        <activity android:name="com.example.deansponholz.fish_game.HUDActivity"
             android:screenOrientation="landscape">
 
         </activity>
         <activity android:name="com.example.deansponholz.fish_game.CalibrationActivity"
             android:screenOrientation="landscape">
+
+        </activity>
+        <activity android:name="com.example.deansponholz.fish_game.AboutActivity">
 
         </activity>
     </application>

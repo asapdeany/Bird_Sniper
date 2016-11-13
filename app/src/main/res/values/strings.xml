@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Bird grSniper</string>
+    <string name="about_yaw_string">Yaw (z-axis rotation):</string>
 </resources>

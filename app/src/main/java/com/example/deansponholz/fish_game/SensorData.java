@@ -75,7 +75,7 @@ public class SensorData implements SensorEventListener {
     public static final float FILTER_COEFFICIENT = 0.98f;
     private Timer fuseTimer = new Timer();
 
-    //private final MainActivity ma;
+    //private final HUDActivity ma;
     //private final HUDFragment hudFragment;
 
     private final SensorHandler sensorHandler;
