@@ -1,5 +1,9 @@
 package com.example.deansponholz.fish_game;
 
+import android.animation.Animator;
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
+import android.animation.ValueAnimator;
 import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
@@ -22,7 +26,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.view.animation.Animation;
+import android.view.animation.TranslateAnimation;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -38,18 +45,22 @@ public class HUDFragment extends Fragment {
 
 
 
-    public ArrayList<Bitmap> arrayOfEnemies = null;
+    public ArrayList<ImageView> arrayOfEnemies = new ArrayList<>();
+    //public ArrayList<Bitmap> arrayOfEnemies = new ArrayList<>();
 
 
-    int test = 0;
-
+    Handler spawnHandler;
+    Runnable SpawnEnemies;
+    boolean test = true;
+    int[] firstPosition = new int[2];
+    float imageXPosition, imageYPosition;
 
     TextView yaw_test = null;
     TextView pitch_test = null;
     TextView roll_test = null;
     Button menu_Button = null;
 
-
+    ImageView myImage = null;
 
 
     float fishX, fishY;
@@ -63,6 +74,7 @@ public class HUDFragment extends Fragment {
 
     public Rect fishBoundsRect = new Rect(0,0,0,0);
     public Rect hookBoundsRect = new Rect(0, 0, 0, 0);
+    public Rect yellowFishBoundsRect = new Rect(0, 0, 0, 0);
 
     Display display;
     WindowManager wm;
@@ -70,13 +82,15 @@ public class HUDFragment extends Fragment {
     int width;
     int height;
 
-    int deviceCalibrate;
+    int deviceCalibrate = 0;
 
     // type definition
     public static final int FLIP_VERTICAL = 1;
     public static final int FLIP_HORIZONTAL = 2;
     public SensorHandler sensorHandler = null;
     private CalibrationFragment calibrationFragment = null;
+
+    RelativeLayout fragment_main;
 
 
 
@@ -90,7 +104,8 @@ public class HUDFragment extends Fragment {
 
         calibrationFragment = new CalibrationFragment();
         offSetCalculator();
-        RelativeLayout fragment_main = (RelativeLayout) root.findViewById(R.id.fragment_main);
+        fragment_main = (RelativeLayout) root.findViewById(R.id.fragment_main);
+        arrayOfEnemies.clear();
         final HUDDrawView hudDrawView = new HUDDrawView(this.getActivity());
         fragment_main.addView(hudDrawView);
 
@@ -290,23 +305,106 @@ public class HUDFragment extends Fragment {
 
 
 
-            final Handler spawnHandler = new Handler();
-            Runnable SpawnEnemies = new Runnable(){
+            spawnHandler = new Handler();
+            SpawnEnemies = new Runnable(){
                 public void run(){
                     //Your code here...
-                    Log.d("2seconds", "spawnfish");
-                    spawnHandler.postDelayed(this, 2000);
-                    invalidate();
+                    //Log.d("2seconds", "spawnfish");
+                    spawnFish();
+                    spawnHandler.postDelayed(this, 4000);
+
                 }
             };
 
             spawnHandler.post(SpawnEnemies);
 
+        }
 
+
+        public void spawnFish(){
+
+            Random r = new Random();
+
+            int low = 170;
+            int high = 500;
+
+            int start = r.nextInt(high - low) + low;
+            int end = r.nextInt(high - low) + low;
+
+            myImage = new ImageView(getContext());
+            myImage.setImageBitmap(resizedFish);
+
+            arrayOfEnemies.add(myImage);
+
+            myImage.setX(width);
+            myImage.setY(start);
+            fragment_main.addView(myImage);
+
+            ObjectAnimator translateXAnimation = ObjectAnimator.ofFloat(arrayOfEnemies.get(0),"x",0);
+            ObjectAnimator translateYAnimation= ObjectAnimator.ofFloat(arrayOfEnemies.get(0), "translationY", end);
+
+            AnimatorSet set = new AnimatorSet();
+            set.setDuration(4000);
+            set.playTogether(translateXAnimation, translateYAnimation);
+            set.start();
+
+            set.addListener(new Animator.AnimatorListener() {
+                @Override
+                public void onAnimationStart(Animator animation) {
+
+                }
+
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    arrayOfEnemies.clear();
+                }
+
+                @Override
+                public void onAnimationCancel(Animator animation) {
+
+                }
+
+                @Override
+                public void onAnimationRepeat(Animator animation) {
+
+                }
+            });
+
+
+            translateXAnimation.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                @Override
+                public void onAnimationUpdate(ValueAnimator animation) {
+                    imageXPosition = (Float)animation.getAnimatedValue();
+
+
+                    //Log.d("fishx", Float.toString(imageXPosition));
+                }
+            });
+
+            translateYAnimation.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                @Override
+                public void onAnimationUpdate(ValueAnimator animation) {
+                    imageYPosition = (Float)animation.getAnimatedValue();
+                    String position = String.format("X:%d Y:%d", (int)imageXPosition, (int)imageYPosition);
+                    Log.d("fishY", position);
+                }
+
+
+
+            });
+
+
+            TranslateAnimation moveLefttoRight = new TranslateAnimation(myImage.getX(), -width, myImage.getY(), end);
+            moveLefttoRight.setDuration(12000);
+            moveLefttoRight.setFillAfter(true);
+
+            //myImage.startAnimation(moveLefttoRight);
+
+            Log.d("fishArraySize", Integer.toString(arrayOfEnemies.size()));
 
 
         }
-        
+
 
         @Override
         public void onDraw(Canvas canvas){
@@ -324,86 +422,34 @@ public class HUDFragment extends Fragment {
             //ship and fish
             onDrawPath(canvas);
 
-
-
-            if (isCollisionDetected(flippedFish, (int)fishX, (int)fishY, hook, (int)hookX, (int)hookY) == true){
-                Random rnd = new Random();
-                paint.setARGB(255, rnd.nextInt(256), rnd.nextInt(256), rnd.nextInt(256));
-            }
-
-            //canvas.drawPath(randomPath(), paint);
-            //spawnFish(canvas);
-
-
-            //hookX = (float) (-sensorHandler.xPos*15) + calibrationFragment.xOffset;
-            //hookY = (float) (sensorHandler.yPos * 15) + calibrationFragment.yOffset;
-            //canvas.drawBitmap(hook, hookX, hookY, paint);
-            //hookBoundsRect = new Rect((int) hookX + 40,(int) hookY + 90, (int) hookX + hook.getWidth() -45, (int) hookY + hook.getHeight() - 20);
-            //canvas.drawRect(hookBoundsRect, paint);
-            //canvas.drawLine(hookX + 85, hookY + 40, pirateShipX + ship_offsetX, pirateShipY + ship_offSetY, paint);
-
-
-            //canvas.drawPath(animPath, paint);
-            //canvas.drawPath(shipPath, paint);
-            //Log.d("test", Double.toString(sensorHandler.xPos));
-
-            //hookMatrix.reset();
-            //hookMatrix.postRotate((float)(Math.atan2(shipTan[1], shipTan[0])*180.0/Math.PI), hookX, hookY);
-            //hookMatrix.postTranslate(pirateShipY, pirateShipY);
-            //hookPath.transform(hookMatrix);
-            //canvas.drawPath(hookPath, paint);
-
-
+            yellowFishBoundsRect = new Rect((int)(imageXPosition) + 10, (int)imageYPosition + 10, (int) imageXPosition +flippedFish.getWidth() - 10, (int)imageYPosition + flippedFish.getHeight() - 10);
+            canvas.drawRect(yellowFishBoundsRect, paint);
+            //canvas.drawRect(myImage.getLeft(), myImage.getDrawable().getBounds().top, myImage.getDrawable().getBounds().right, myImage.getDrawable().getBounds().bottom,paint);
 
 
             /*
-
-            //send fish on Path
-            if(distance < pathLength){
-                pathMeasure.getPosTan(distance, pos, tan);
-                distance += speed;
-
-                matrix.reset();
-                float degrees = (float)(Math.atan2(tan[1], tan[0])*180.0/Math.PI);
-                fishX = pos[0]-fish_offsetX;
-                fishY = pos[1]-fish_offsetY;
-                matrix.postRotate(degrees);
-                matrix.postTranslate(fishX, fishY);
-
-                canvas.drawBitmap(flippedFish, matrix, null);
-                fishBoundsRect = new Rect((int)(fishX) + 10, (int)fishY + 10, (int) fishX +flippedFish.getWidth() - 10, (int)fishY + flippedFish.getHeight() - 10);
-                canvas.drawRect(fishBoundsRect, paint);
-                //Log.d("end", Float.toString(fishX));
-                distance += step;
-            }
-            else{
-                //make new random Path
-                distance = 0;
-                animPath = randomPath();
-                pathMeasure = new PathMeasure(animPath, false);
-                speed = pathMeasure.getLength()/1000;
-                pathLength = pathMeasure.getLength() / 2;
-                //Log.d("end", "killme");
-            }
-
-            if(shipDistance < shipPathLength){
-                shipPathMeasure.getPosTan(shipDistance, shipPos, shipTan);
-                shipDistance += shipSpeed;
-                shipMatrix.reset();
-                pirateShipX = shipPos[0]-ship_offsetX;
-                pirateShipY = shipPos[1]-ship_offSetY;
-                shipMatrix.postTranslate(pirateShipX, pirateShipY);
-                canvas.drawBitmap(pirateShip, shipMatrix, null);
-
-                shipDistance += shipStep;
-            }
-            else{
-                shipDistance = 0;
-                //Log.d("end", "killme");
-            }
-
             //collision detection
             //http://stackoverflow.com/questions/5914911/pixel-perfect-collision-detection-android
+            if (isCollisionDetected(flippedFish, (int)fishX, (int)fishY, hook, (int)hookX, (int)hookY) == true){
+            //if (isCollisionDetected(myImage.getDrawingCache(), (int)imageXPosition, (int)imageYPosition, hook, (int)hookX, (int)hookY) == true){
+                Random rnd = new Random();
+                paint.setARGB(255, rnd.nextInt(256), rnd.nextInt(256), rnd.nextInt(256));
+
+            }
+            */
+
+
+            /*
+            myImage.getDrawingRect(rc1);
+            canvas.drawRect(rc1, paint);
+            Rect rc2 = hookBoundsRect;
+            if (Rect.intersects(rc1, rc2)) {
+                // intersection is detected
+                // here is your method call
+                Random rnd = new Random();
+                paint.setARGB(255, rnd.nextInt(256), rnd.nextInt(256), rnd.nextInt(256));
+            }
+            */
 
 
             /*
@@ -420,39 +466,6 @@ public class HUDFragment extends Fragment {
 
             invalidate();
         }
-
-        /*
-
-        public void spawnFish(Canvas canvas){
-
-
-
-            for (int i = 0; i < 2; i++) {
-                Path animPath = randomPath();
-                PathMeasure pathMeasureTest = new PathMeasure(animPath, false);
-                Matrix matrixTest = new Matrix();
-                int stepTest = 1;
-                int distanceTest = 0;
-                float[] posTest = new float[2];
-                float[] tanTest = new float[2];
-
-                matrixTest.reset();
-                matrixTest.postTranslate(fishX, fishY);
-                float speedTest = pathMeasureTest.getLength() / 1000;
-                float pathLengthTest = pathMeasureTest.getLength() / 2;
-
-
-                canvas.drawBitmap(flippedFish, matrixTest, paint);
-                //canvas.drawBitmap(arrayOfEnemies.get(i), matrixTest, null);
-            }
-
-
-
-
-            invalidate();
-
-        }
-        */
 
 
         public void onDrawFishLine(Canvas canvas){
@@ -560,7 +573,8 @@ public class HUDFragment extends Fragment {
     public  boolean isCollisionDetected(Bitmap bitmap1, int x1, int y1,
                                               Bitmap bitmap2, int x2, int y2) {
 
-        Rect bounds1 = new Rect((int)(fishX) + 10, (int)fishY + 10, (int) fishX +bitmap1.getWidth() - 10, (int)fishY + bitmap1.getHeight() - 10);
+        //Rect bounds1 = new Rect((int)(fishX) + 10, (int)fishY + 10, (int) fishX +bitmap1.getWidth() - 10, (int)fishY + bitmap1.getHeight() - 10);
+        Rect bounds1 = new Rect((int)(imageXPosition) + 10, (int)imageYPosition + 10, (int) imageXPosition, (int)imageYPosition);
         Rect bounds2 = new Rect((int) hookX + 40,(int) hookY + 90, (int) hookX + bitmap2.getWidth() -45, (int) hookY + bitmap2.getHeight() - 20);
 
         if (Rect.intersects(bounds1, bounds2)) {
@@ -570,7 +584,6 @@ public class HUDFragment extends Fragment {
                     int bitmap1Pixel = bitmap1.getPixel(i-x1, j-y1);
                     int bitmap2Pixel = bitmap2.getPixel(i-x2, j-y2);
                     if (isFilled(bitmap1Pixel) && isFilled(bitmap2Pixel)) {
-
                         //bitmap1.recycle();
                         //bitmap1.eraseColor(0);
                         Log.d("test", "true");
@@ -594,4 +607,11 @@ public class HUDFragment extends Fragment {
         return pixel != Color.TRANSPARENT;
     }
 
+
+    @Override
+    public void onPause() {
+        spawnHandler.removeCallbacks(SpawnEnemies);
+        arrayOfEnemies.clear();
+        super.onResume();
+    }
 }
