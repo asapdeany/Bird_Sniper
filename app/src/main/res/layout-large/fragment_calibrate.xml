@@ -8,28 +8,49 @@
         android:orientation="vertical"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@android:color/holo_blue_light"
         android:layout_centerVertical="true"
-        android:layout_alignParentStart="true">
+        android:layout_alignParentStart="true"
+        android:layout_marginLeft="@dimen/activity_vertical_margin">
 
         <Button
-            android:text="UP"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:text="↑"
+            android:textColor="#FFFFFF"
+            android:textSize="30sp"
+            android:layout_width="100dp"
+            android:layout_height="75dp"
+            android:background="@drawable/buttonshape"
+            android:shadowColor="#000000"
+            android:shadowDx="0"
+            android:shadowDy="1"
+            android:shadowRadius="0"
             android:id="@+id/up_button" />
 
         <Button
             android:text="Start"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:textColor="#FFFFFF"
+            android:textSize="22.5sp"
+            android:layout_width="100dp"
+            android:layout_height="75dp"
+            android:background="@drawable/buttonshape"
+            android:shadowColor="#000000"
+            android:shadowDx="0"
+            android:shadowDy="1"
+            android:shadowRadius="0"
             android:layout_marginTop="@dimen/activity_vertical_margin"
             android:layout_marginBottom="@dimen/activity_vertical_margin"
             android:id="@+id/center_calibrate_button" />
 
         <Button
-            android:text="DOWN"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:text="↓"
+            android:textColor="#FFFFFF"
+            android:textSize="30sp"
+            android:layout_width="100dp"
+            android:layout_height="75dp"
+            android:background="@drawable/buttonshape"
+            android:shadowColor="#000000"
+            android:shadowDx="0"
+            android:shadowDy="1"
+            android:shadowRadius="0"
             android:id="@+id/down_button" />
     </LinearLayout>
 </RelativeLayout>

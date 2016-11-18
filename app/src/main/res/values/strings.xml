@@ -1,4 +1,9 @@
 <resources>
     <string name="app_name">Bird grSniper</string>
     <string name="about_yaw_string">Yaw (z-axis rotation):</string>
+    <string name="accel_mag_about">Accelerometer/Magnetometer Orientation</string>
+    <string name="gyro_about">Gyroscope Orientation</string>
+    <string name="fusion_orientation_about">Sensor Fusion Orientation</string>
+    <string name="about_pitch_string">Pitch (x-axis rotation):</string>
+    <string name="about_roll_string">Roll (y-axis rotation):</string>
 </resources>

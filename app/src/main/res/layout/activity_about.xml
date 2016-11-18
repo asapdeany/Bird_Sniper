@@ -9,5 +9,7 @@
         android:layout_height="match_parent"
         class="com.example.deansponholz.fish_game.AboutFragment"
         tools:layout="@layout/fragment_about"
-        android:id="@+id/about_fragment" />
+        android:id="@+id/about_fragment"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true" />
 </RelativeLayout>

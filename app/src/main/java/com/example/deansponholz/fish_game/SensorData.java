@@ -9,6 +9,7 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Handler;
+import android.util.Log;
 import android.view.View;
 import android.widget.RadioGroup;
 import android.widget.TextView;
@@ -80,6 +81,8 @@ public class SensorData implements SensorEventListener {
 
     private final SensorHandler sensorHandler;
 
+    private final AboutFragment aboutFragment = new AboutFragment();
+
     //create sensor handler class
     //use sensor handler class as paramter instead of hud fragment
     public SensorData(SensorManager sm, SensorHandler sensorHandler){
@@ -146,18 +149,10 @@ public class SensorData implements SensorEventListener {
 
 
         }
-        //pitch
-        xPos = -fusedOrientation[1] * 180/Math.PI;
-        //roll
-        yPos = fusedOrientation[2] * 180/Math.PI;
-        y= (float) (-xPos*15);
-        x= (float) (yPos*15);
-        //ma.setTextViewValue(fusedOrientation);
-        //final hudFragment = new HUDFragment();
-        sensorHandler.setValues(fusedOrientation);
-        //hudFragment.setTextViewValue(fusedOrientation);
-        //ma.setTextViewValue(fusedOrientation);
-        //ma.setValues(xPos);
+
+        sensorHandler.setAccelMagValues(accMagOrientation);
+        sensorHandler.setGyroValues(gyroOrientation);
+        sensorHandler.setFusedValues(fusedOrientation);
 
     }
 

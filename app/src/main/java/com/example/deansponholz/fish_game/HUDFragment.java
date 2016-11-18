@@ -61,6 +61,7 @@ public class HUDFragment extends Fragment {
     Button menu_Button = null;
 
     ImageView myImage = null;
+    ImageView fish2ImageView = null;
 
 
     float fishX, fishY;
@@ -87,6 +88,8 @@ public class HUDFragment extends Fragment {
     // type definition
     public static final int FLIP_VERTICAL = 1;
     public static final int FLIP_HORIZONTAL = 2;
+
+
     public SensorHandler sensorHandler = null;
     private CalibrationFragment calibrationFragment = null;
 
@@ -108,6 +111,7 @@ public class HUDFragment extends Fragment {
         arrayOfEnemies.clear();
         final HUDDrawView hudDrawView = new HUDDrawView(this.getActivity());
         fragment_main.addView(hudDrawView);
+
 
         this.yaw_test = (TextView) root.findViewById(R.id.yaw_test);
         this.pitch_test = (TextView) root.findViewById(R.id.pitch_test);
@@ -303,8 +307,19 @@ public class HUDFragment extends Fragment {
 
             //onDrawFishLine(canvas);
 
+            myImage = new ImageView(getContext());
+            //fish2ImageView = new ImageView(getContext());
+            myImage.setImageBitmap(resizedFish);
+            //fish2ImageView.setImageBitmap(resizedFish);
+
+            arrayOfEnemies.add(myImage);
+            arrayOfEnemies.add(myImage);
 
 
+
+            spawnFish();
+
+            /*
             spawnHandler = new Handler();
             SpawnEnemies = new Runnable(){
                 public void run(){
@@ -317,6 +332,7 @@ public class HUDFragment extends Fragment {
             };
 
             spawnHandler.post(SpawnEnemies);
+            */
 
         }
 
@@ -328,18 +344,35 @@ public class HUDFragment extends Fragment {
             int low = 170;
             int high = 500;
 
+            int i = 0;
+
+
             int start = r.nextInt(high - low) + low;
-            int end = r.nextInt(high - low) + low;
+            int start2 = r.nextInt(high - low) + low;
+            //int end = r.nextInt(high - low) + low;
 
-            myImage = new ImageView(getContext());
-            myImage.setImageBitmap(resizedFish);
 
-            arrayOfEnemies.add(myImage);
 
-            myImage.setX(width);
-            myImage.setY(start);
-            fragment_main.addView(myImage);
+            fragment_main.addView(arrayOfEnemies.get(0));
+            arrayOfEnemies.get(0).setX(width-80);
+            arrayOfEnemies.get(0).setY(start);
 
+
+            /*
+            fragment_main.addView(arrayOfEnemies.get(1));
+            arrayOfEnemies.get(1).setX(width-400);
+            arrayOfEnemies.get(1).setY(start);
+            */
+
+
+            //Log.d("fishArraySize", Integer.toString(arrayOfEnemies.size()));
+
+
+            //myImage.setX(width);
+            //myImage.setY(start);
+            //fragment_main.addView(myImage);
+
+            /*
             ObjectAnimator translateXAnimation = ObjectAnimator.ofFloat(arrayOfEnemies.get(0),"x",0);
             ObjectAnimator translateYAnimation= ObjectAnimator.ofFloat(arrayOfEnemies.get(0), "translationY", end);
 
@@ -400,7 +433,15 @@ public class HUDFragment extends Fragment {
 
             //myImage.startAnimation(moveLefttoRight);
 
-            Log.d("fishArraySize", Integer.toString(arrayOfEnemies.size()));
+            */
+
+
+
+
+        }
+
+        public void movefish(ImageView fishView){
+
 
 
         }
@@ -610,7 +651,7 @@ public class HUDFragment extends Fragment {
 
     @Override
     public void onPause() {
-        spawnHandler.removeCallbacks(SpawnEnemies);
+        //spawnHandler.removeCallbacks(SpawnEnemies);
         arrayOfEnemies.clear();
         super.onResume();
     }
