@@ -24,8 +24,7 @@
         class="com.example.deansponholz.fish_game.HUDFragment"
         tools:layout="@layout/fragment_main"
         android:id="@+id/HUDFragment"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentStart="true">
+        android:layout_alignParentTop="true">
     </fragment>
 
 </RelativeLayout>

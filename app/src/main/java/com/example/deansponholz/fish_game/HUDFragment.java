@@ -13,8 +13,6 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Paint;
-import android.graphics.Path;
-import android.graphics.PathMeasure;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.os.Bundle;
@@ -26,15 +24,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.view.animation.Animation;
-import android.view.animation.TranslateAnimation;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Random;
 
 /**
@@ -43,81 +37,100 @@ import java.util.Random;
 
 public class HUDFragment extends Fragment {
 
+    //theme song
+    //https://www.youtube.com/watch?v=7-G0kK4FIdM
 
-
-    public ArrayList<ImageView> arrayOfEnemies = new ArrayList<>();
-    //public ArrayList<Bitmap> arrayOfEnemies = new ArrayList<>();
-
-
-    Handler spawnHandler;
-    Runnable SpawnEnemies;
-    boolean test = true;
-    int[] firstPosition = new int[2];
-    float imageXPosition, imageYPosition;
-
-    TextView yaw_test = null;
-    TextView pitch_test = null;
-    TextView roll_test = null;
-    Button menu_Button = null;
-
-    ImageView myImage = null;
-    ImageView fish2ImageView = null;
-
-
-    float fishX, fishY;
-    float pirateShipX, pirateShipY;
-    float hookX, hookY;
-    float shipSpawnY;
-
-
-    private double yOffset;
-
-
-    public Rect fishBoundsRect = new Rect(0,0,0,0);
-    public Rect hookBoundsRect = new Rect(0, 0, 0, 0);
-    public Rect yellowFishBoundsRect = new Rect(0, 0, 0, 0);
-
+    //Dimension specifics, Fragment Layout, and Sensor Calibration
+    RelativeLayout fragment_main;
     Display display;
     WindowManager wm;
     Point size;
     int width;
     int height;
+    int fishSizeX, fishSizeY;
+    int sharkSizeX, sharkSizeY;
+    int lowSpawn, highSpawn;
+    Boolean gameStarted = false;
+    private SensorHandler sensorHandler = null;
+    private CalibrationFragment calibrationFragment = null;
 
-    int deviceCalibrate = 0;
+    //Views and Score
+    TextView score_TextView = null;
+    TextView hookCount_TextView = null;
+    Button menu_Button = null;
+    Button startGame_Button = null;
+    int gameScore, hookCount;
 
-    // type definition
+    //flip bitmap function
     public static final int FLIP_VERTICAL = 1;
     public static final int FLIP_HORIZONTAL = 2;
 
+    //GameHandler
+    Handler spawnHandler;
+    Runnable spawnFish;
+    Runnable spawnShark;
 
-    public SensorHandler sensorHandler = null;
-    private CalibrationFragment calibrationFragment = null;
+    //Fish Bitmaps and position
+    Bitmap fish1, fish2, fish3;
+    Bitmap leftFish, rightFish;
+    float spawnedFishXPosition, spawnedFishYPosition;
 
-    RelativeLayout fragment_main;
+    //Shark bitmap and position
+    Bitmap shark1, shark2;
+    Bitmap leftShark, rightShark;
+    float spawnedSharkXPosition, spawnedSharkYPosition;
 
+    //Ship Bitmaps, position, and spawnPosition
+    ImageView shipImage = null;
+    Bitmap pship;
+    Bitmap pirateShip;
+    float shipXPosition, shipYPosition;
+    float shipSpawnY;
 
-
+    //Hook Bitmap, Position, Offset, and Collision Detection rectangle values
+    Bitmap hookDrawable;
+    Bitmap hookcaught1, hookcaught2, hookcaught3;
+    Bitmap hook;
+    float hookX, hookY;
+    int hookSizeX, hookSizeY;
+    int hookOffsetX, hookOffsetY;
+    int hookLeft, hookRight, hookTop, hookBottom;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_main, container, false);
+
+        //Device Metrics
         wm = (WindowManager) root.getContext().getSystemService(Context.WINDOW_SERVICE);
-
+        deviceSizeCalculator();
+        //Sensor and Calibration
         sensorHandler = new SensorHandler(root.getContext());
-
         calibrationFragment = new CalibrationFragment();
-        offSetCalculator();
+
+        //Fragment and buttons
         fragment_main = (RelativeLayout) root.findViewById(R.id.fragment_main);
-        arrayOfEnemies.clear();
+        this.hookCount_TextView = (TextView) root.findViewById(R.id.hookCountTextView);
+        this.score_TextView = (TextView) root.findViewById(R.id.scoreTextView);
+        this.menu_Button = (Button) root.findViewById(R.id.menu_button);
+        this.startGame_Button = (Button) root.findViewById(R.id.startGameButton);
+
+        //Custom Draw View
         final HUDDrawView hudDrawView = new HUDDrawView(this.getActivity());
         fragment_main.addView(hudDrawView);
 
+        //Button Listeners
+        startGame_Button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                gameStarted = true;
+                startGame_Button.setClickable(false);
+                startGame_Button.setVisibility(View.GONE);
+                hookCount = 0;
+                gameScore = 0;
+                hudDrawView.startGame();
 
-        this.yaw_test = (TextView) root.findViewById(R.id.yaw_test);
-        this.pitch_test = (TextView) root.findViewById(R.id.pitch_test);
-        this.roll_test = (TextView) root.findViewById(R.id.roll_test);
-        this.menu_Button = (Button) root.findViewById(R.id.menu_button);
-
+            }
+        });
 
         menu_Button.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -131,122 +144,18 @@ public class HUDFragment extends Fragment {
         return root;
     }
 
-    public void offSetCalculator(){
-
-        //Screen Inches
-        DisplayMetrics dm = new DisplayMetrics();
-        wm.getDefaultDisplay().getMetrics(dm);
-        int widthtest=dm.widthPixels;
-        int heighttest=dm.heightPixels;
-        int dens=dm.densityDpi;
-        double wi=(double)widthtest/(double)dens;
-        double hi=(double)heighttest/(double)dens;
-        double xtest = Math.pow(wi,2);
-        double ytest = Math.pow(hi,2);
-        double screenInches = Math.sqrt(xtest+ytest);
-
-
-        //screen Pixels
-        display = wm.getDefaultDisplay();
-        size = new Point();
-        display.getSize(size);
-        width =  size.x;
-        height = size.y;
-
-
-        if (screenInches > 6.0){
-            Log.d("BigDevice", Double.toString(screenInches));
-            Log.d("screenWidth", Integer.toString(width));
-            Log.d("screenHeight", Integer.toString(height));
-            shipSpawnY = (float)(height * 0.2);
-        }
-        if (screenInches < 6.0){
-            Log.d("SmallDevice", Double.toString(screenInches));
-            Log.d("screenWidth", Integer.toString(width));
-            Log.d("screenHeight", Integer.toString(height));
-            shipSpawnY = (float)(height * 0.1);
-
-        }
-
-    }
-
-    public Bitmap flip(Bitmap src, int type) {
-        // create new matrix for transformation
-        Matrix matrix = new Matrix();
-        // if vertical
-        if(type == FLIP_VERTICAL) {
-            // y = y * -1
-            matrix.preScale(1.0f, -1.0f);
-        }
-        // if horizonal
-        else if(type == FLIP_HORIZONTAL) {
-            // x = x * -1
-            matrix.preScale(-1.0f, 1.0f);
-            // unknown type
-        } else {
-            return null;
-        }
-        //matrix.postRotate((float)(yPos * 4.5));
-
-        // return transformed image
-        return Bitmap.createBitmap(src, 0, 0, src.getWidth(), src.getHeight(), matrix, true);
-    }
-
-
     public class HUDDrawView extends View{
 
-
-
-        //BitMaps
-        Bitmap fish = BitmapFactory.decodeResource(getResources(), R.drawable.yellowfish);
-        Bitmap hook = BitmapFactory.decodeResource(getResources(), R.drawable.hook);
-
-        Bitmap resizedFish = Bitmap.createScaledBitmap(fish, 90, 70, false);
-        Bitmap flippedFish = Bitmap.createBitmap(flip(resizedFish, 2));
-
-        Bitmap pship = BitmapFactory.decodeResource(getResources(), R.drawable.pirateship_normal);
-        Bitmap pirateShip = Bitmap.createBitmap(pship);
-
+        //Random
+        Random r;
 
         //onDraw
         Canvas canvas;
         Paint paint = new Paint();
+        Paint hookPaint = new Paint();
 
-        //Bitmap Positions
-        int fish_offsetX, fish_offsetY;
+        //Bitmap Offsets
         int ship_offsetX, ship_offSetY;
-
-
-        //HookPath
-        Path hookPath;
-        PathMeasure hookPathMeasure;
-        float[] hookPos;
-        float[] hookTan;
-        Matrix hookMatrix;
-
-
-        //FishPath
-        Path animPath;
-        PathMeasure pathMeasure;
-        float pathLength;
-        float step;
-        float distance;
-        float[] pos;
-        float[] tan;
-        float speed;
-        Matrix matrix;
-
-        //ShipPath
-        Path shipPath;
-        PathMeasure shipPathMeasure;
-        float shipPathLength;
-        float shipStep;
-        float shipDistance;
-        float[] shipPos;
-        float[] shipTan;
-        float shipSpeed;
-        Matrix shipMatrix;
-
 
         public HUDDrawView(Context context){super(context);
         initMyView();
@@ -254,130 +163,79 @@ public class HUDFragment extends Fragment {
 
         public void initMyView(){
 
+            r = new Random();
+
+
+
             //Drawing Tools
             canvas = new Canvas();
             paint = new Paint();
-            paint.setColor(Color.WHITE);
-            paint.setStrokeWidth(4);
-            paint.setStyle(Paint.Style.STROKE);
+            hookPaint = new Paint();
+            hookPaint.setColor(Color.TRANSPARENT);
+            hookPaint.setStrokeWidth(1.5f);
+            hookPaint.setStyle(Paint.Style.STROKE);
 
-            //initial Bitmap Positions
-            fish_offsetX = resizedFish.getWidth()/2;
-            fish_offsetY = resizedFish.getHeight()/2;
+            //ShipOffset
             ship_offsetX = pirateShip.getWidth()/2;
             ship_offSetY = pirateShip.getHeight()/2;
 
+        }
 
-            //hookPath initialization
-            hookPath = new Path();
-            hookPath.moveTo(300, 400);
-            hookPath.lineTo(200, 500);
-            hookPath.close();
-            hookMatrix = new Matrix();
+        public void startGame(){
 
-
-
-            //hookPath.lineTo();
-            //fishPath initialization
-            animPath = randomPath();
-            pathMeasure = new PathMeasure(animPath, false);
-            speed = pathMeasure.getLength()/1000;
-            pathLength = pathMeasure.getLength() / 2;
-            step = 1;
-            distance = 0;
-            pos = new float[2];
-            tan = new float[2];
-            matrix = new Matrix();
-
-
-            //shipPath initialization
-            shipPath = new Path();
-            shipPath.moveTo(width, shipSpawnY);
-            shipPath.lineTo(0, shipSpawnY);
-            shipPath.close();
-            shipPathMeasure = new PathMeasure(shipPath, false);
-            shipSpeed = shipPathMeasure.getLength()/5000;
-            Log.d("ship speed", Float.toString(shipSpeed));
-            shipPathLength = shipPathMeasure.getLength();
-            shipPos = new float[2];
-            shipTan = new float[2];
-            shipDistance = 0;
-            shipMatrix = new Matrix();
-
-
-            //onDrawFishLine(canvas);
-
-            myImage = new ImageView(getContext());
-            //fish2ImageView = new ImageView(getContext());
-            myImage.setImageBitmap(resizedFish);
-            //fish2ImageView.setImageBitmap(resizedFish);
-
-            arrayOfEnemies.add(myImage);
-            arrayOfEnemies.add(myImage);
-
-
-
-            spawnFish();
-
-            /*
+            hookPaint.setColor(Color.WHITE);
+            draw(canvas);
             spawnHandler = new Handler();
-            SpawnEnemies = new Runnable(){
+            spawnBoat();
+            spawnFish = new Runnable(){
                 public void run(){
-                    //Your code here...
-                    //Log.d("2seconds", "spawnfish");
-                    spawnFish();
-                    spawnHandler.postDelayed(this, 4000);
-
+                    //Log.d("Runnable", "spawnfish");
+                    int x = r.nextBoolean() ? 1 : -1;
+                    //Log.d("test", Integer.toString(x));
+                    if (x == 1){
+                        spawnFishRight();
+                    }
+                    else if (x == -1){
+                        spawnFishLeft();
+                    }
+                    spawnHandler.postDelayed(this, 1350);
+                }
+            };
+            spawnShark = new Runnable() {
+                @Override
+                public void run() {
+                    //Log.d("Runnable", "spawnShark");
+                    int x = r.nextBoolean() ? 1 : -1;
+                    if (x == 1){
+                        spawnSharkRight();
+                    }
+                    else if (x == -1){
+                        spawnSharkLeft();
+                    }
+                    spawnHandler.postDelayed(this, 2500);
                 }
             };
 
-            spawnHandler.post(SpawnEnemies);
-            */
-
+            spawnHandler.post(spawnShark);
+            spawnHandler.post(spawnFish);
         }
 
+        public void spawnBoat(){
 
-        public void spawnFish(){
+            shipImage = new ImageView(getContext());
+            shipImage.setImageBitmap(pirateShip);
+            shipImage.setX(width - 80);
+            shipImage.setY(shipSpawnY);
+            fragment_main.addView(shipImage);
+            moveBoat(shipImage);
+        }
 
-            Random r = new Random();
+        public void moveBoat(ImageView shipImageView){
 
-            int low = 170;
-            int high = 500;
-
-            int i = 0;
-
-
-            int start = r.nextInt(high - low) + low;
-            int start2 = r.nextInt(high - low) + low;
-            //int end = r.nextInt(high - low) + low;
-
-
-
-            fragment_main.addView(arrayOfEnemies.get(0));
-            arrayOfEnemies.get(0).setX(width-80);
-            arrayOfEnemies.get(0).setY(start);
-
-
-            /*
-            fragment_main.addView(arrayOfEnemies.get(1));
-            arrayOfEnemies.get(1).setX(width-400);
-            arrayOfEnemies.get(1).setY(start);
-            */
-
-
-            //Log.d("fishArraySize", Integer.toString(arrayOfEnemies.size()));
-
-
-            //myImage.setX(width);
-            //myImage.setY(start);
-            //fragment_main.addView(myImage);
-
-            /*
-            ObjectAnimator translateXAnimation = ObjectAnimator.ofFloat(arrayOfEnemies.get(0),"x",0);
-            ObjectAnimator translateYAnimation= ObjectAnimator.ofFloat(arrayOfEnemies.get(0), "translationY", end);
-
+            final ObjectAnimator translateXAnimation = ObjectAnimator.ofFloat(shipImage,"translationX",-75);
+            ObjectAnimator translateYAnimation= ObjectAnimator.ofFloat(shipImage, "translationY", shipSpawnY);
             AnimatorSet set = new AnimatorSet();
-            set.setDuration(4000);
+            set.setDuration(60000);
             set.playTogether(translateXAnimation, translateYAnimation);
             set.start();
 
@@ -389,7 +247,14 @@ public class HUDFragment extends Fragment {
 
                 @Override
                 public void onAnimationEnd(Animator animation) {
-                    arrayOfEnemies.clear();
+                    hookPaint.setColor(Color.TRANSPARENT);
+                    spawnHandler.removeCallbacks(spawnFish);
+                    spawnHandler.removeCallbacks(spawnShark);
+                    fragment_main.removeView(shipImage);
+                    startGame_Button.setVisibility(VISIBLE);
+                    startGame_Button.setText("Play Again");
+                    startGame_Button.setClickable(true);
+
                 }
 
                 @Override
@@ -407,203 +272,485 @@ public class HUDFragment extends Fragment {
             translateXAnimation.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
                 @Override
                 public void onAnimationUpdate(ValueAnimator animation) {
-                    imageXPosition = (Float)animation.getAnimatedValue();
-
-
-                    //Log.d("fishx", Float.toString(imageXPosition));
+                    shipXPosition = (Float)animation.getAnimatedValue();
                 }
             });
 
             translateYAnimation.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
                 @Override
                 public void onAnimationUpdate(ValueAnimator animation) {
-                    imageYPosition = (Float)animation.getAnimatedValue();
-                    String position = String.format("X:%d Y:%d", (int)imageXPosition, (int)imageYPosition);
-                    Log.d("fishY", position);
+                    shipYPosition = (Float)animation.getAnimatedValue();
+                    //String position = String.format("X:%d Y:%d", (int)shipXPosition, (int)shipYPosition);
+                    //Log.d("shipPosition", position);
+                    if (isCollisionShipHook(pirateShip, (int)shipXPosition, (int)shipYPosition, hook, (int)hookX, (int)hookY) == true){
+                        gameScore = gameScore + hookCount;
+                        hookCount = 0;
+                        hook = Bitmap.createScaledBitmap(hookDrawable, hookSizeX, hookSizeY, false);
+                    }
                 }
+            });
+        }
+
+        public void spawnSharkRight(){
+            int startRand = r.nextInt(highSpawn - lowSpawn) + lowSpawn;
+            //Log.d("sharkStartPositionRight", Integer.toString(startRand));
+            int sharkRand = r.nextInt(3-1) + 1;
+            //Log.d("randdomShark", Integer.toString(sharkRand));
+
+            ImageView myImage = new ImageView(getContext());
+            if (sharkRand == 1){
+                leftShark = Bitmap.createScaledBitmap(shark1, sharkSizeX, sharkSizeY, false);
+                myImage.setImageBitmap(leftShark);
+            }
+            if (sharkRand == 2){
+                leftShark = Bitmap.createScaledBitmap(shark2, sharkSizeX, sharkSizeY, false);
+                myImage.setImageBitmap(leftShark);
+            }
+
+            myImage.setX(width - 80);
+            myImage.setY(startRand);
+            fragment_main.addView(myImage);
+            moveSharkLeft(myImage);
+
+        }
+
+        public void spawnSharkLeft(){
+            int startRand = r.nextInt(highSpawn - lowSpawn) + lowSpawn;
+            //Log.d("sharkStartPositionRight", Integer.toString(startRand));
+            int sharkRand = r.nextInt(3-1) + 1;
+            //Log.d("randdomShark", Integer.toString(sharkRand));
+
+            ImageView myImage = new ImageView(getContext());
+            if (sharkRand == 1){
+                rightShark = Bitmap.createScaledBitmap(flip(shark1, 2), sharkSizeX, sharkSizeY, false);
+                myImage.setImageBitmap(rightShark);
+            }
+            if (sharkRand == 2){
+                rightShark = Bitmap.createScaledBitmap(flip(shark2, 2), sharkSizeX, sharkSizeY, false);
+                myImage.setImageBitmap(rightShark);
+            }
+
+            myImage.setX(-100f);
+            myImage.setY(startRand);
+            fragment_main.addView(myImage);
+            moveSharkRight(myImage);
 
 
+        }
+        public void moveSharkRight(final ImageView sharkView){
+            int randEnd = r.nextInt(highSpawn - lowSpawn) + lowSpawn;
 
+            ObjectAnimator translateXAnimation = ObjectAnimator.ofFloat(sharkView,"translationX",width);
+            ObjectAnimator translateYAnimation= ObjectAnimator.ofFloat(sharkView, "translationY", randEnd);
+
+            AnimatorSet set = new AnimatorSet();
+            set.setDuration(8000);
+            set.playTogether(translateXAnimation, translateYAnimation);
+            set.start();
+
+            set.addListener(new Animator.AnimatorListener() {
+                @Override
+                public void onAnimationStart(Animator animation) {
+                }
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    fragment_main.removeView(sharkView);
+                }
+                @Override
+                public void onAnimationCancel(Animator animation) {
+                }
+                @Override
+                public void onAnimationRepeat(Animator animation) {
+                }
             });
 
-
-            TranslateAnimation moveLefttoRight = new TranslateAnimation(myImage.getX(), -width, myImage.getY(), end);
-            moveLefttoRight.setDuration(12000);
-            moveLefttoRight.setFillAfter(true);
-
-            //myImage.startAnimation(moveLefttoRight);
-
-            */
-
-
-
-
+            translateXAnimation.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                @Override
+                public void onAnimationUpdate(ValueAnimator animation) {
+                    spawnedSharkXPosition = (Float)animation.getAnimatedValue();
+                }
+            });
+            translateYAnimation.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                @Override
+                public void onAnimationUpdate(ValueAnimator animation) {
+                    spawnedSharkYPosition = (Float)animation.getAnimatedValue();
+                    //check for collision
+                    if (isCollisionDetectedSharkHook(rightShark, (int) spawnedSharkXPosition, (int) spawnedSharkYPosition, hook, (int)hookX, (int)hookY) == true){
+                        hookCount = 0;
+                        hook = Bitmap.createScaledBitmap(hookDrawable, hookSizeX, hookSizeY, false);
+                        hookPaint.setColor(Color.RED);
+                        hookPaint.setStrokeWidth(5.25f);
+                        final Handler handler = new Handler();
+                        handler.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                hookPaint.setColor(Color.WHITE);
+                                hookPaint.setStrokeWidth(1.5f);
+                            }
+                        }, 100);
+                    }
+                }
+            });
         }
 
-        public void movefish(ImageView fishView){
+        public void moveSharkLeft(final ImageView sharkView){
+            int randEnd = r.nextInt(highSpawn - lowSpawn) + lowSpawn;
 
+            ObjectAnimator translateXAnimation = ObjectAnimator.ofFloat(sharkView,"translationX",0);
+            ObjectAnimator translateYAnimation= ObjectAnimator.ofFloat(sharkView, "translationY", randEnd);
 
+            AnimatorSet set = new AnimatorSet();
+            set.setDuration(8000);
+            set.playTogether(translateXAnimation, translateYAnimation);
+            set.start();
 
+            set.addListener(new Animator.AnimatorListener() {
+                @Override
+                public void onAnimationStart(Animator animation) {
+                }
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    fragment_main.removeView(sharkView);
+                }
+                @Override
+                public void onAnimationCancel(Animator animation) {
+                }
+                @Override
+                public void onAnimationRepeat(Animator animation) {
+                }
+            });
+
+            translateXAnimation.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                @Override
+                public void onAnimationUpdate(ValueAnimator animation) {
+                    spawnedSharkXPosition = (Float)animation.getAnimatedValue();
+                }
+            });
+            translateYAnimation.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                @Override
+                public void onAnimationUpdate(ValueAnimator animation) {
+                    spawnedSharkYPosition = (Float)animation.getAnimatedValue();
+                    //check for collision
+                    if (isCollisionDetectedSharkHook(leftShark, (int) spawnedSharkXPosition, (int) spawnedSharkYPosition, hook, (int)hookX, (int)hookY) == true){
+                        hookCount = 0;
+                        hook = Bitmap.createScaledBitmap(hookDrawable, hookSizeX, hookSizeY, false);
+                        hookPaint.setColor(Color.RED);
+                        hookPaint.setStrokeWidth(5.25f);
+                        final Handler handler = new Handler();
+                        handler.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                hookPaint.setColor(Color.WHITE);
+                                hookPaint.setStrokeWidth(1.5f);
+                            }
+                        }, 100);
+                    }
+                }
+            });
         }
 
 
-        @Override
+        public void spawnFishRight(){
+
+            int fishRand = r.nextInt(4-1) + 1;
+            //Log.d("fishRand", Integer.toString(fishRand));
+            int startRand = r.nextInt(highSpawn - lowSpawn) + lowSpawn;
+            //Log.d("fishStartPositionRight", Integer.toString(startRand));
+
+            ImageView myImage = new ImageView(getContext());
+            if (fishRand == 1){
+                leftFish = Bitmap.createScaledBitmap(fish1, fishSizeX, fishSizeY, false);
+                myImage.setImageBitmap(leftFish);
+            }
+            if (fishRand == 2){
+                leftFish = Bitmap.createScaledBitmap(fish2, fishSizeX, fishSizeY, false);
+                myImage.setImageBitmap(leftFish);
+            }
+            if (fishRand == 3){
+                leftFish = Bitmap.createScaledBitmap(fish3, fishSizeX, fishSizeY, false);
+                myImage.setImageBitmap(leftFish);
+            }
+
+            myImage.setX(width-80);
+            myImage.setY(startRand);
+            fragment_main.addView(myImage);
+            moveFishLeft(myImage);
+        }
+
+        public void spawnFishLeft(){
+
+            int fishRand = r.nextInt(4-1) + 1;
+            //Log.d("fishRand", Integer.toString(fishRand));
+            int startRand = r.nextInt(highSpawn - lowSpawn) + lowSpawn;
+            //Log.d("fishStartPositionLeft", Integer.toString(number));
+
+            ImageView myImage = new ImageView(getContext());
+            if (fishRand == 1){
+                rightFish = Bitmap.createBitmap(flip(Bitmap.createScaledBitmap(fish1, fishSizeX, fishSizeY, false), 2));
+                myImage.setImageBitmap(rightFish);
+            }
+            if (fishRand == 2){
+                rightFish = Bitmap.createBitmap(flip(Bitmap.createScaledBitmap(fish2, fishSizeX, fishSizeY, false), 2));
+                myImage.setImageBitmap(rightFish);
+            }
+            if (fishRand == 3){
+                rightFish = Bitmap.createBitmap(flip(Bitmap.createScaledBitmap(fish3, fishSizeX, fishSizeY, false), 2));
+                myImage.setImageBitmap(rightFish);
+            }
+
+            myImage.setX(width * 0.0005f);
+            myImage.setY(startRand);
+            fragment_main.addView(myImage);
+            moveFishRight(myImage);
+        }
+
+        public void moveFishRight(final ImageView fishView){
+
+            int randEnd = r.nextInt(highSpawn - lowSpawn) + lowSpawn;
+
+            ObjectAnimator translateXAnimation = ObjectAnimator.ofFloat(fishView,"translationX",width);
+            ObjectAnimator translateYAnimation= ObjectAnimator.ofFloat(fishView, "translationY", randEnd);
+
+            AnimatorSet set = new AnimatorSet();
+            set.setDuration(6000);
+            set.playTogether(translateXAnimation, translateYAnimation);
+            set.start();
+
+            set.addListener(new Animator.AnimatorListener() {
+                @Override
+                public void onAnimationStart(Animator animation) {
+
+                }
+
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    fragment_main.removeView(fishView);
+                }
+
+                @Override
+                public void onAnimationCancel(Animator animation) {
+
+                }
+
+                @Override
+                public void onAnimationRepeat(Animator animation) {
+
+                }
+            });
+
+            translateXAnimation.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                @Override
+                public void onAnimationUpdate(ValueAnimator animation) {
+                    spawnedFishXPosition = (Float)animation.getAnimatedValue();
+                }
+            });
+            translateYAnimation.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                @Override
+                public void onAnimationUpdate(ValueAnimator animation) {
+                    spawnedFishYPosition = (Float)animation.getAnimatedValue();
+                    //check for collision
+                    if (isCollisionDetectedFishHook(rightFish, (int) spawnedFishXPosition, (int) spawnedFishYPosition, hook, (int)hookX, (int)hookY) == true){
+                        hookCount++;
+                        fragment_main.removeView(fishView);
+                        animation.removeAllUpdateListeners();
+                    }
+                    if (hookCount >= 1){
+                        hook = Bitmap.createScaledBitmap(hookcaught1, hookSizeX, hookSizeY, false);
+                    }
+                    if (hookCount >= 5){
+                        hook = Bitmap.createScaledBitmap(hookcaught2, hookSizeX, hookSizeY, false);
+                    }
+                    if (hookCount >= 10){
+                        hook = Bitmap.createScaledBitmap(hookcaught3, hookSizeX, hookSizeY, false);
+                    }
+                }
+            });
+        }
+
+        public void moveFishLeft(final ImageView fishView){
+
+            int end = r.nextInt(highSpawn - lowSpawn) + lowSpawn;
+
+            ObjectAnimator translateXAnimation = ObjectAnimator.ofFloat(fishView,"translationX",0);
+            ObjectAnimator translateYAnimation= ObjectAnimator.ofFloat(fishView, "translationY", end);
+
+            AnimatorSet set = new AnimatorSet();
+            set.setDuration(6000);
+            set.playTogether(translateXAnimation, translateYAnimation);
+            set.start();
+
+            set.addListener(new Animator.AnimatorListener() {
+                @Override
+                public void onAnimationStart(Animator animation) {
+                }
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    fragment_main.removeView(fishView);
+                }
+                @Override
+                public void onAnimationCancel(Animator animation) {
+                }
+                @Override
+                public void onAnimationRepeat(Animator animation) {
+                }
+            });
+
+            translateXAnimation.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                @Override
+                public void onAnimationUpdate(ValueAnimator animation) {
+                    spawnedFishXPosition = (Float)animation.getAnimatedValue();
+                }
+            });
+            translateYAnimation.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                @Override
+                public void onAnimationUpdate(ValueAnimator animation) {
+                    spawnedFishYPosition = (Float)animation.getAnimatedValue();
+                    //check for collision
+                    if (isCollisionDetectedFishHook(leftFish, (int) spawnedFishXPosition, (int) spawnedFishYPosition, hook, (int)hookX, (int)hookY) == true){
+                        hookCount++;
+                        fragment_main.removeView(fishView);
+                        animation.removeAllUpdateListeners();
+                    }
+                    if (hookCount >= 1){
+                        hook = Bitmap.createScaledBitmap(hookcaught1, hookSizeX, hookSizeY, false);
+                    }
+                    if (hookCount >= 5){
+                        hook = Bitmap.createScaledBitmap(hookcaught2, hookSizeX, hookSizeY, false);
+                    }
+                    if (hookCount >= 10){
+                        hook = Bitmap.createScaledBitmap(hookcaught3, hookSizeX, hookSizeY, false);
+                    }
+                }
+            });
+        }
+
         public void onDraw(Canvas canvas){
-            //http://android-er.blogspot.com/2014/05/animation-of-moving-bitmap-along-path.html
+            //update Score
+            hookCount_TextView.setText("Hook Count: " + Integer.toString(hookCount));
+            score_TextView.setText("Total Score: " + Integer.toString(gameScore));
+            //draw hook and line
+            drawFishLine(canvas);
 
-
-
-            yaw_test.setText(Double.toString(sensorHandler.zPos));
-            pitch_test.setText(Double.toString(sensorHandler.xPos));
-            roll_test.setText(Double.toString(sensorHandler.yPos));
-
-
-            //hook and line
-            onDrawFishLine(canvas);
-            //ship and fish
-            onDrawPath(canvas);
-
-            yellowFishBoundsRect = new Rect((int)(imageXPosition) + 10, (int)imageYPosition + 10, (int) imageXPosition +flippedFish.getWidth() - 10, (int)imageYPosition + flippedFish.getHeight() - 10);
-            canvas.drawRect(yellowFishBoundsRect, paint);
-            //canvas.drawRect(myImage.getLeft(), myImage.getDrawable().getBounds().top, myImage.getDrawable().getBounds().right, myImage.getDrawable().getBounds().bottom,paint);
-
-
-            /*
-            //collision detection
-            //http://stackoverflow.com/questions/5914911/pixel-perfect-collision-detection-android
-            if (isCollisionDetected(flippedFish, (int)fishX, (int)fishY, hook, (int)hookX, (int)hookY) == true){
-            //if (isCollisionDetected(myImage.getDrawingCache(), (int)imageXPosition, (int)imageYPosition, hook, (int)hookX, (int)hookY) == true){
-                Random rnd = new Random();
-                paint.setARGB(255, rnd.nextInt(256), rnd.nextInt(256), rnd.nextInt(256));
-
-            }
-            */
-
-
-            /*
-            myImage.getDrawingRect(rc1);
-            canvas.drawRect(rc1, paint);
-            Rect rc2 = hookBoundsRect;
-            if (Rect.intersects(rc1, rc2)) {
-                // intersection is detected
-                // here is your method call
-                Random rnd = new Random();
-                paint.setARGB(255, rnd.nextInt(256), rnd.nextInt(256), rnd.nextInt(256));
-            }
-            */
-
-
-            /*
-            if (x > tempx) {
-                canvas.drawBitmap(flipped, x + 530, y + yOffset, p);
-                tempx = x;
-            }
-
-            else if (x < tempx){
-                canvas.drawBitmap(resized, x + 530, y + yOffset, p);
-                tempx = x;
-            }
-            */
-
+            //Rect bounds1 = new Rect((int)(shipXPosition) + 10, (int)shipYPosition + 10, (int) shipXPosition + pirateShip.getWidth()-10, (int)shipYPosition + pirateShip.getHeight()-10);
+            //canvas.drawRect(bounds1, paint);
+            //Rect bounds2 = new Rect((int) hookX + hookLeft,(int) hookY + hookTop, (int) hookX + hook.getWidth() - hookRight, (int) hookY + hook.getHeight() - hookBottom);
+            //canvas.drawRect(bounds2, paint);
             invalidate();
         }
 
-
-        public void onDrawFishLine(Canvas canvas){
-
+        public void drawFishLine(Canvas canvas){
+            //use sensors and calibration data to set hook position
             hookX = (float) (-sensorHandler.xPos*15) + calibrationFragment.xOffset;
             hookY = (float) (sensorHandler.yPos * 15) + calibrationFragment.yOffset;
             canvas.drawBitmap(hook, hookX, hookY, paint);
-            hookBoundsRect = new Rect((int) hookX + 40,(int) hookY + 90, (int) hookX + hook.getWidth() -45, (int) hookY + hook.getHeight() - 20);
-            canvas.drawRect(hookBoundsRect, paint);
+            canvas.drawLine(hookX + hookOffsetX, hookY + hookOffsetY, shipXPosition + ship_offsetX, shipYPosition + ship_offSetY, hookPaint);
+        }
+    }
 
+    public void deviceSizeCalculator(){
 
-            canvas.drawLine(hookX + 85, hookY + 40, pirateShipX + ship_offsetX, pirateShipY + ship_offSetY, paint);
+        //BitMaps
+        hookDrawable = BitmapFactory.decodeResource(getResources(), R.drawable.hook);
+        hookcaught1 = BitmapFactory.decodeResource(getResources(), R.drawable.hookcaught_first);
+        hookcaught2 = BitmapFactory.decodeResource(getResources(), R.drawable.hookcaught_second);
+        hookcaught3 = BitmapFactory.decodeResource(getResources(), R.drawable.hookcaught_third);
+        pship = BitmapFactory.decodeResource(getResources(), R.drawable.pirateship_normal);
+        //fishBitmaps
+        fish1 = BitmapFactory.decodeResource(getResources(), R.drawable.fish1);
+        fish2 = BitmapFactory.decodeResource(getResources(), R.drawable.fish2);
+        fish3 = BitmapFactory.decodeResource(getResources(), R.drawable.fish3);
+        shark1 = BitmapFactory.decodeResource(getResources(), R.drawable.shark1);
+        shark2 = BitmapFactory.decodeResource(getResources(), R.drawable.shark2);
 
-            invalidate();
+        //Screen Inches
+        DisplayMetrics dm = new DisplayMetrics();
+        wm.getDefaultDisplay().getMetrics(dm);
+        int widthtest=dm.widthPixels;
+        int heighttest=dm.heightPixels;
+        int dens=dm.densityDpi;
+        double wi=(double)widthtest/(double)dens;
+        double hi=(double)heighttest/(double)dens;
+        double xtest = Math.pow(wi,2);
+        double ytest = Math.pow(hi,2);
+        double screenInches = Math.sqrt(xtest+ytest);
+
+        //screen Pixels
+        display = wm.getDefaultDisplay();
+        size = new Point();
+        display.getSize(size);
+        width =  size.x;
+        height = size.y;
+
+        if (screenInches > 6.0){
+            Log.d("BigDevice", Double.toString(screenInches));
+            Log.d("screenWidth", Integer.toString(width));
+            Log.d("screenHeight", Integer.toString(height));
+            shipSpawnY = (float)(height * 0.055);
+            fishSizeX = 80;
+            fishSizeY = 60;
+            sharkSizeX = 235;
+            sharkSizeY = 143;
+            pirateShip = Bitmap.createBitmap(pship);
+            hookSizeX = 150;
+            hookSizeY = 150;
+            hook = Bitmap.createScaledBitmap(hookDrawable, hookSizeX, hookSizeY, false);
+
+            hookOffsetX = 85;
+            hookOffsetY = 40;
+            hookLeft = 45;
+            hookTop = 80;
+            hookRight = 50;
+            hookBottom = 25;
+            lowSpawn = 335;
+            highSpawn = 1000;
 
         }
-
-
-
-        public void onDrawPath(Canvas canvas){
-            canvas.drawPath(animPath, paint);
-            canvas.drawPath(shipPath, paint);
-
-
-            if(distance < pathLength){
-                pathMeasure.getPosTan(distance, pos, tan);
-                distance += speed;
-
-                matrix.reset();
-                float degrees = (float)(Math.atan2(tan[1], tan[0])*180.0/Math.PI);
-                fishX = pos[0]-fish_offsetX;
-                fishY = pos[1]-fish_offsetY;
-                matrix.postRotate(degrees);
-                matrix.postTranslate(fishX, fishY);
-
-                canvas.drawBitmap(flippedFish, matrix, null);
-                fishBoundsRect = new Rect((int)(fishX) + 10, (int)fishY + 10, (int) fishX +flippedFish.getWidth() - 10, (int)fishY + flippedFish.getHeight() - 10);
-                canvas.drawRect(fishBoundsRect, paint);
-                //Log.d("end", Float.toString(fishX));
-                distance += step;
-            }
-            else{
-                //make new random Path
-                distance = 0;
-                animPath = randomPath();
-                pathMeasure = new PathMeasure(animPath, false);
-                speed = pathMeasure.getLength()/1000;
-                pathLength = pathMeasure.getLength() / 2;
-                //Log.d("end", "killme");
-            }
-
-            if(shipDistance < shipPathLength){
-                shipPathMeasure.getPosTan(shipDistance, shipPos, shipTan);
-                shipDistance += shipSpeed;
-                shipMatrix.reset();
-                pirateShipX = shipPos[0]-ship_offsetX;
-                pirateShipY = shipPos[1]-ship_offSetY;
-                shipMatrix.postTranslate(pirateShipX, pirateShipY);
-                canvas.drawBitmap(pirateShip, shipMatrix, null);
-
-                shipDistance += shipStep;
-            }
-            else{
-                shipDistance = 0;
-                //Log.d("end", "killme");
-            }
-
-            invalidate();
-
+        if (screenInches < 6.0){
+            Log.d("SmallDevice", Double.toString(screenInches));
+            Log.d("screenWidth", Integer.toString(width));
+            Log.d("screenHeight", Integer.toString(height));
+            shipSpawnY = (float)(height * 0.055);
+            fishSizeX = 70;
+            fishSizeY = 50;
+            sharkSizeX = 195;
+            sharkSizeY = 97;
+            hookSizeX = 100;
+            hookSizeY = 100;
+            pirateShip = Bitmap.createScaledBitmap(pship, 135, 135, false);
+            hook = Bitmap.createScaledBitmap(hookDrawable, hookSizeX, hookSizeY, false);
+            hookOffsetX = 55;
+            hookOffsetY = 25;
+            hookLeft = 25;
+            hookTop = 60;
+            hookRight = 35;
+            hookBottom = 10;
+            lowSpawn = 170;
+            highSpawn = 620;
         }
 
     }
 
-    public Path randomPath(){
-
-        Random r = new Random();
-        Path animPath = new Path();
-        float top = (float) (height * 0.90);
-
-        float bottom = (float) (height * 0.15);
-        int topRound = Math.round(top);
-        int bottomRound = Math.round(bottom);
-
-
-        int randSpawn = r.nextInt(topRound-bottomRound) + bottomRound;
-        int randEnd = r.nextInt(topRound-bottomRound) + bottomRound;
-        //Log.d("start", Integer.toString(randSpawn));
-        //Log.d("end", Integer.toString(randEnd));
-        animPath.moveTo(0, randSpawn);
-        animPath.lineTo(width, randEnd);
-
-        animPath.close();
-
-        return animPath;
+    public Bitmap flip(Bitmap src, int type) {
+        // create new matrix for transformation
+        Matrix matrix = new Matrix();
+        // if vertical
+        if(type == FLIP_VERTICAL) {
+            // y = y * -1
+            matrix.preScale(1.0f, -1.0f);
+        }
+        // if horizontal
+        else if(type == FLIP_HORIZONTAL) {
+            // x = x * -1
+            matrix.preScale(-1.0f, 1.0f);
+            // unknown type
+        } else {
+            return null;
+        }
+        // return transformed image
+        return Bitmap.createBitmap(src, 0, 0, src.getWidth(), src.getHeight(), matrix, true);
     }
 
-    /**
+    /** Collision Detection for FISH & HOOK
      * @param bitmap1 First bitmap
      * @param x1 x-position of bitmap1 on screen.
      * @param y1 y-position of bitmap1 on screen.
@@ -611,12 +758,13 @@ public class HUDFragment extends Fragment {
      * @param x2 x-position of bitmap2 on screen.
      * @param y2 y-position of bitmap2 on screen.
      */
-    public  boolean isCollisionDetected(Bitmap bitmap1, int x1, int y1,
-                                              Bitmap bitmap2, int x2, int y2) {
+    public boolean isCollisionDetectedFishHook(Bitmap bitmap1, int x1, int y1,
+                                               Bitmap bitmap2, int x2, int y2) {
 
         //Rect bounds1 = new Rect((int)(fishX) + 10, (int)fishY + 10, (int) fishX +bitmap1.getWidth() - 10, (int)fishY + bitmap1.getHeight() - 10);
-        Rect bounds1 = new Rect((int)(imageXPosition) + 10, (int)imageYPosition + 10, (int) imageXPosition, (int)imageYPosition);
-        Rect bounds2 = new Rect((int) hookX + 40,(int) hookY + 90, (int) hookX + bitmap2.getWidth() -45, (int) hookY + bitmap2.getHeight() - 20);
+        Rect bounds1 = new Rect((int)(spawnedFishXPosition) + 10, (int) spawnedFishYPosition + 10, (int) spawnedFishXPosition + bitmap1.getWidth()-10, (int) spawnedFishYPosition + bitmap1.getHeight()-10);
+        Rect bounds2 = new Rect((int) hookX + hookLeft,(int) hookY + hookTop, (int) hookX + bitmap2.getWidth() - hookRight, (int) hookY + bitmap2.getHeight() - hookBottom);
+
 
         if (Rect.intersects(bounds1, bounds2)) {
             Rect collisionBounds = getCollisionBounds(bounds1, bounds2);
@@ -625,9 +773,69 @@ public class HUDFragment extends Fragment {
                     int bitmap1Pixel = bitmap1.getPixel(i-x1, j-y1);
                     int bitmap2Pixel = bitmap2.getPixel(i-x2, j-y2);
                     if (isFilled(bitmap1Pixel) && isFilled(bitmap2Pixel)) {
-                        //bitmap1.recycle();
-                        //bitmap1.eraseColor(0);
-                        Log.d("test", "true");
+                        //Log.d("test", "true");
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
+    /** Collision Detection for FISH & HOOK
+     * @param bitmap1 First bitmap
+     * @param x1 x-position of bitmap1 on screen.
+     * @param y1 y-position of bitmap1 on screen.
+     * @param bitmap2 Second bitmap.
+     * @param x2 x-position of bitmap2 on screen.
+     * @param y2 y-position of bitmap2 on screen.
+     */
+    public boolean isCollisionDetectedSharkHook(Bitmap bitmap1, int x1, int y1,
+                                               Bitmap bitmap2, int x2, int y2) {
+
+        //Rect bounds1 = new Rect((int)(fishX) + 10, (int)fishY + 10, (int) fishX +bitmap1.getWidth() - 10, (int)fishY + bitmap1.getHeight() - 10);
+        Rect bounds1 = new Rect((int)(spawnedSharkXPosition) + 10, (int) spawnedSharkYPosition + 10, (int) spawnedSharkXPosition + bitmap1.getWidth()-10, (int) spawnedSharkYPosition + bitmap1.getHeight()-10);
+        Rect bounds2 = new Rect((int) hookX + hookLeft,(int) hookY + hookTop, (int) hookX + bitmap2.getWidth() - hookRight, (int) hookY + bitmap2.getHeight() - hookBottom);
+
+
+        if (Rect.intersects(bounds1, bounds2)) {
+            Rect collisionBounds = getCollisionBounds(bounds1, bounds2);
+            for (int i = collisionBounds.left; i < collisionBounds.right; i++) {
+                for (int j = collisionBounds.top; j < collisionBounds.bottom; j++) {
+                    int bitmap1Pixel = bitmap1.getPixel(i-x1, j-y1);
+                    int bitmap2Pixel = bitmap2.getPixel(i-x2, j-y2);
+                    if (isFilled(bitmap1Pixel) && isFilled(bitmap2Pixel)) {
+                        //Log.d("test", "true");
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
+    /** Collision Detection for SHIP & HOOK
+     * @param bitmap1 First bitmap
+     * @param x1 x-position of bitmap1 on screen.
+     * @param y1 y-position of bitmap1 on screen.
+     * @param bitmap2 Second bitmap.
+     * @param x2 x-position of bitmap2 on screen.
+     * @param y2 y-position of bitmap2 on screen.
+     */
+    public boolean isCollisionShipHook(Bitmap bitmap1, int x1, int y1,
+                                       Bitmap bitmap2, int x2, int y2) {
+
+
+        Rect bounds1 = new Rect((int)(shipXPosition) + 10, (int)shipYPosition + 10, (int) shipXPosition + bitmap1.getWidth()-10, (int)shipYPosition + bitmap1.getHeight()-10);
+        Rect bounds2 = new Rect((int) hookX + hookLeft,(int) hookY + hookTop, (int) hookX + bitmap2.getWidth() - hookRight, (int) hookY + bitmap2.getHeight() - hookBottom);
+
+        if (Rect.intersects(bounds1, bounds2)) {
+            Rect collisionBounds = getCollisionBounds(bounds1, bounds2);
+            for (int i = collisionBounds.left; i < collisionBounds.right; i++) {
+                for (int j = collisionBounds.top; j < collisionBounds.bottom; j++) {
+                    int bitmap1Pixel = bitmap1.getPixel(i-x1, j-y1);
+                    int bitmap2Pixel = bitmap2.getPixel(i-x2, j-y2);
+                    if (isFilled(bitmap1Pixel) && isFilled(bitmap2Pixel)) {
+                        //Log.d("test", "true");
                         return true;
                     }
                 }
@@ -651,8 +859,10 @@ public class HUDFragment extends Fragment {
 
     @Override
     public void onPause() {
-        //spawnHandler.removeCallbacks(SpawnEnemies);
-        arrayOfEnemies.clear();
+        if (gameStarted == true){
+            spawnHandler.removeCallbacks(spawnFish);
+        }
         super.onResume();
     }
+
 }

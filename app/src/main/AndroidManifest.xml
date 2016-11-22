@@ -6,11 +6,11 @@
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="Fishin' Time"
+        android:largeHeap="true"
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.NoActionBar">
         <activity android:name="com.example.deansponholz.fish_game.MenuActivity"
             android:label="Fishin' Time">
-
             <intent-filter >
                 <action android:name="android.intent.action.MAIN" />
 
@@ -25,8 +25,8 @@
             android:screenOrientation="landscape">
 
         </activity>
-        <activity android:name="com.example.deansponholz.fish_game.AboutActivity">
-
+        <activity android:name="com.example.deansponholz.fish_game.AboutActivity"
+            android:screenOrientation="landscape">
         </activity>
     </application>
 

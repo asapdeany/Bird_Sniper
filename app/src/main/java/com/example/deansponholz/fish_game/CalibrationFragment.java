@@ -37,6 +37,9 @@ public class CalibrationFragment extends Fragment {
     float fishX, fishY;
     float shipSpawnY;
 
+    int lineX, lineY;
+    int fishSizeX, fishSizeY;
+
 
 
     public Rect sprite1Bounds = new Rect(0,0,0,0);
@@ -105,9 +108,10 @@ public class CalibrationFragment extends Fragment {
     }
 
     public class CalibrateDrawView extends View {
+
         //BitMaps
-        Bitmap fish = BitmapFactory.decodeResource(getResources(), R.drawable.yellowfish);
-        Bitmap resizedFish = Bitmap.createScaledBitmap(fish, 90, 70, false);
+        Bitmap fish = BitmapFactory.decodeResource(getResources(), R.drawable.shark);
+        Bitmap resizedFish = Bitmap.createScaledBitmap(fish, fishSizeX, fishSizeY, false);
 
 
         //onDraw
@@ -149,7 +153,7 @@ public class CalibrationFragment extends Fragment {
 
 
 
-            canvas.drawLine(fishX + 85, fishY + 40, width / 2, height / 2, paint);
+            canvas.drawLine(fishX + lineX, fishY + lineY, width / 2, height / 2, paint);
             canvas.drawBitmap(resizedFish, fishX, fishY, paint);
 
 
@@ -189,6 +193,10 @@ public class CalibrationFragment extends Fragment {
             shipSpawnY = (float)(height * 0.2);
             deviceCalibrateUp = 50;
             deviceCalibrateDown = 50;
+            fishSizeX = 90;
+            fishSizeY = 70;
+            lineX = 50;
+            lineY = 30;
 
         }
         if (screenInches < 6.0){
@@ -198,6 +206,10 @@ public class CalibrationFragment extends Fragment {
             shipSpawnY = (float)(height * 0.1);
             deviceCalibrateUp = 35;
             deviceCalibrateDown = 35;
+            fishSizeX = 80;
+            fishSizeY = 60;
+            lineX = 50;
+            lineY = 40;
         }
 
 
@@ -265,5 +277,10 @@ public class CalibrationFragment extends Fragment {
             return false;
         }
 
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
     }
 }
