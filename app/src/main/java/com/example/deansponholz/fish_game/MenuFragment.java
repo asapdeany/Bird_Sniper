@@ -17,6 +17,8 @@ public class MenuFragment extends Fragment {
 
     Button play_button = null;
     Button about_button = null;
+    Button instruction_button = null;
+
 
     @Nullable
     @Override
@@ -24,6 +26,7 @@ public class MenuFragment extends Fragment {
         View root = inflater.inflate(R.layout.fragment_menu, container, false);
         this.play_button = (Button) root.findViewById(R.id.play_button);
         this.about_button = (Button) root.findViewById(R.id.about_button);
+        this.instruction_button = (Button) root.findViewById(R.id.instructions_button);
 
 
         play_button.setOnClickListener(new View.OnClickListener() {
@@ -38,6 +41,14 @@ public class MenuFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getActivity(), AboutActivity.class);
+                getActivity().startActivity(intent);
+            }
+        });
+
+        instruction_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getActivity(), InstructionActivity.class);
                 getActivity().startActivity(intent);
             }
         });

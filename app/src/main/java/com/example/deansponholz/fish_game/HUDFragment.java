@@ -255,6 +255,7 @@ public class HUDFragment extends Fragment {
                     startGame_Button.setText("Play Again");
                     startGame_Button.setClickable(true);
 
+
                 }
 
                 @Override

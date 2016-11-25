@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/transparent" >
+
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true"
+        android:id="@+id/imageView3"
+        android:background="@drawable/instruction_gameplay"
+        android:adjustViewBounds="false"
+        android:scaleType="fitXY" />
+
+    <TextView
+        android:text="@string/instruction_gp_two"
+        android:layout_width="@dimen/gamebutton_II_height_LARGE"
+        android:layout_height="@dimen/gamebutton_ll_height_"
+        android:layout_marginTop="13dp"
+        android:id="@+id/textView3"
+        android:textSize="@dimen/about_text_size"
+        android:layout_below="@+id/textView2"
+        android:layout_alignStart="@+id/textView2"
+        android:textColor="@android:color/white" />
+
+    <TextView
+        android:text="@string/instruction_gp_three"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/textView4"
+        android:textSize="@dimen/about_text_size"
+        android:layout_below="@+id/textView3"
+        android:layout_alignStart="@+id/textView3"
+        android:textColor="@android:color/white" />
+
+    <TextView
+        android:text="@string/instruction_gp_four"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/textView5"
+        android:layout_below="@+id/textView4"
+        android:layout_alignStart="@+id/textView4"
+        android:layout_marginTop="10dp"
+        android:textSize="@dimen/about_text_size"
+        android:textColor="@android:color/white" />
+
+    <TextView
+        android:text="@string/instruction_gp_one"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="52dp"
+        android:layout_marginTop="69dp"
+        android:id="@+id/textView2"
+        android:textSize="@dimen/about_text_size"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:textColor="@android:color/white" />
+</RelativeLayout>

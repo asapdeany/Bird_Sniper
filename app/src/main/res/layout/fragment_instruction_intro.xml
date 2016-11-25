@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/instruction_intro_Background" >
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/instruction_title_text_size"
+        android:text="@string/instruction_intro"
+        android:layout_marginTop="33dp"
+        android:textColor="@android:color/white"
+        android:textAlignment="center"
+        android:id="@+id/first_instruction_screen_intro"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/instruction_text_size"
+        android:text="@string/instruction_one"
+        android:layout_marginTop="40dp"
+        android:textColor="@android:color/white"
+        android:textAlignment="center"
+        android:id="@+id/second_instruction_screen_intro"
+        android:layout_below="@+id/first_instruction_screen_intro"
+        android:layout_alignParentStart="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/instruction_text_size"
+        android:text="@string/instruction_four"
+        android:textColor="@android:color/white"
+        android:textAlignment="center"
+        android:id="@+id/third_instruction_screen_intro"
+        android:layout_marginTop="45dp"
+        android:layout_below="@+id/second_instruction_screen_intro"
+        android:layout_alignParentStart="true" />
+
+
+</RelativeLayout>

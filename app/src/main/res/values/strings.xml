@@ -1,9 +1,21 @@
 <resources>
-    <string name="app_name">Bird grSniper</string>
+    <string name="app_name">Fishin\' Time</string>
     <string name="about_yaw_string">Yaw (z-axis rotation):</string>
     <string name="accel_mag_about">Accelerometer/Magnetometer Orientation</string>
     <string name="gyro_about">Gyroscope Orientation</string>
     <string name="fusion_orientation_about">Sensor Fusion Orientation</string>
     <string name="about_pitch_string">Pitch (x-axis rotation):</string>
     <string name="about_roll_string">Roll (y-axis rotation):</string>
+    <string name="instruction_intro">Welcome to Fishin\' Time!</string>
+    <string name="instruction_one">This game works by tilting the device. Touching the screen does nothing during gameplay.</string>
+    <string name="instruction_two">Tilt the device to the orientation you wish to play in.</string>
+    <string name="instruction_three">After pressing play, calibrate the game by using the arrows to move the fish inside the circle.</string>
+    <string name="instruction_four">Objective: Catch as many fish as possible before the ship reaches the other side.</string>
+    <string name="instruction_gp_one">Tilt device to move the hook.</string>
+    <string name="instruction_gp_two">Return hooked fish to the boat to increase score.</string>
+    <string name="instruction_gp_three">Avoid sharks. They will eat all the current fish on your hook.</string>
+    <string name="instruction_gp_four">Be conscious of the ships position.</string>
+    <string name="downArrow">↓</string>
+    <string name="upArrow">↑</string>
+    <string name="instructions">Instructions</string>
 </resources>

@@ -1,6 +1,6 @@
 package com.example.deansponholz.fish_game;
 
-import android.app.Fragment;
+
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -10,8 +10,9 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.Rect;
-import android.os.Bundle;
 import android.os.Handler;
+import android.support.v4.app.Fragment;
+import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Display;
@@ -21,16 +22,17 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
-
+import android.widget.TextView;
 
 /**
- * Created by deansponholz on 11/12/16.
+ * Created by deansponholz on 11/23/16.
  */
 
-public class CalibrationFragment extends Fragment {
+public class Instruction_two_Fragment extends Fragment {
 
-    Button up_button, down_button, center_button;
+    Button up_button, down_button;
 
     public static float yOffset, xOffset;
 
@@ -51,27 +53,25 @@ public class CalibrationFragment extends Fragment {
     int height;
 
     int deviceCalibrateUp, deviceCalibrateDown;
-
-    // type definition
-    public static final int FLIP_VERTICAL = 1;
-    public static final int FLIP_HORIZONTAL = 2;
     public SensorHandler sensorHandler = null;
+
 
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View root = inflater.inflate(R.layout.fragment_calibrate, container, false);
+        View root = inflater.inflate(R.layout.fragment_instruction_two, container, false);
+
+
         wm = (WindowManager) root.getContext().getSystemService(Context.WINDOW_SERVICE);
         offSetCalculator();
         sensorHandler = new SensorHandler(root.getContext());
 
-        RelativeLayout fragment_calibrate = (RelativeLayout) root.findViewById(R.id.fragment_calibrate);
-        CalibrateDrawView calibrateDrawView = new CalibrateDrawView(this.getActivity());
-        fragment_calibrate.addView(calibrateDrawView);
+        RelativeLayout fragment_calibrate = (RelativeLayout) root.findViewById(R.id.fragment_calibrate_instruction);
+        InstructionDrawView instructionDrawView = new InstructionDrawView(this.getActivity());
+        fragment_calibrate.addView(instructionDrawView);
 
-        this.up_button = (Button) root.findViewById(R.id.up_button);
-        this.center_button = (Button) root.findViewById(R.id.center_calibrate_button);
-        this.down_button = (Button) root.findViewById(R.id.down_button);
+        this.up_button = (Button) root.findViewById(R.id.up_button_instruction);
+        this.down_button = (Button) root.findViewById(R.id.down_button_instruction);
 
         up_button.setOnTouchListener(new RepeatListener(400, 100, new View.OnClickListener() {
             @Override
@@ -81,15 +81,6 @@ public class CalibrationFragment extends Fragment {
             }
         }));
 
-        center_button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Log.d("yOffsetbefore", Double.toString(yOffset));
-                Intent intent = new Intent(getActivity(), HUDActivity.class);
-                getActivity().startActivity(intent);
-            }
-        });
-
         down_button.setOnTouchListener(new RepeatListener(400, 100, new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -98,12 +89,15 @@ public class CalibrationFragment extends Fragment {
                 Log.d("yOffsetbefore", Double.toString(yOffset));
             }
         }));
-
-
         return root;
     }
 
-    public class CalibrateDrawView extends View {
+    public static Instruction_two_Fragment newInstance() {
+
+        Instruction_two_Fragment f = new Instruction_two_Fragment();
+        return f;
+    }
+    public class InstructionDrawView extends View {
 
         //BitMaps
         Bitmap fish = BitmapFactory.decodeResource(getResources(), R.drawable.shark);
@@ -119,7 +113,7 @@ public class CalibrationFragment extends Fragment {
 
 
 
-        public CalibrateDrawView(Context context) {
+        public InstructionDrawView(Context context) {
             super(context);
             initMyView();
         }
