@@ -127,6 +127,7 @@ public class HUDFragment extends Fragment {
                 startGame_Button.setVisibility(View.GONE);
                 hookCount = 0;
                 gameScore = 0;
+                hook = Bitmap.createScaledBitmap(hookDrawable, hookSizeX, hookSizeY, false);
                 hudDrawView.startGame();
 
             }
@@ -254,8 +255,6 @@ public class HUDFragment extends Fragment {
                     startGame_Button.setVisibility(VISIBLE);
                     startGame_Button.setText("Play Again");
                     startGame_Button.setClickable(true);
-
-
                 }
 
                 @Override

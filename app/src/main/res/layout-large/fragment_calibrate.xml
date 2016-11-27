@@ -13,26 +13,26 @@
         android:layout_marginLeft="@dimen/activity_vertical_margin">
 
         <Button
-            android:text="↑"
-            android:textColor="#FFFFFF"
-            android:textSize="30sp"
-            android:layout_width="100dp"
-            android:layout_height="75dp"
+            android:text="@string/up_arrow"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/text_size_button"
+            android:layout_width="@dimen/btton_size"
+            android:layout_height="@dimen/button_size_widthd"
             android:background="@drawable/buttonshape"
-            android:shadowColor="#000000"
+            android:shadowColor="@android:color/black"
             android:shadowDx="0"
             android:shadowDy="1"
             android:shadowRadius="0"
             android:id="@+id/up_button" />
 
         <Button
-            android:text="Start"
-            android:textColor="#FFFFFF"
-            android:textSize="22.5sp"
-            android:layout_width="100dp"
-            android:layout_height="75dp"
+            android:text="@string/start"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/text_size_button_middle"
+            android:layout_width="@dimen/btton_size"
+            android:layout_height="@dimen/button_size_widthd"
             android:background="@drawable/buttonshape"
-            android:shadowColor="#000000"
+            android:shadowColor="@android:color/black"
             android:shadowDx="0"
             android:shadowDy="1"
             android:shadowRadius="0"
@@ -41,13 +41,13 @@
             android:id="@+id/center_calibrate_button" />
 
         <Button
-            android:text="↓"
-            android:textColor="#FFFFFF"
-            android:textSize="30sp"
-            android:layout_width="100dp"
-            android:layout_height="75dp"
+            android:text="@string/bottom_arrow"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/text_size_button"
+            android:layout_width="@dimen/btton_size"
+            android:layout_height="@dimen/button_size_widthd"
             android:background="@drawable/buttonshape"
-            android:shadowColor="#000000"
+            android:shadowColor="@android:color/black"
             android:shadowDx="0"
             android:shadowDy="1"
             android:shadowRadius="0"

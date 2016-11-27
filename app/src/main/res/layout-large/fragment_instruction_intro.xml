@@ -10,8 +10,20 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="@dimen/instruction_title_text_size"
+        android:text="@string/instruction_four"
+        android:textColor="@android:color/white"
+        android:textAlignment="center"
+        android:id="@+id/third_instruction_screen_intro"
+        android:layout_marginTop="@dimen/margin_end_tv"
+        android:layout_below="@+id/second_instruction_screen_intro"
+        android:layout_centerHorizontal="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/big_text_size"
         android:text="@string/instruction_intro"
-        android:layout_marginTop="@dimen/margin_top_tv_intro"
+        android:layout_marginTop="@dimen/button_margin_large"
         android:textColor="@android:color/white"
         android:textAlignment="center"
         android:id="@+id/first_instruction_screen_intro"
@@ -21,25 +33,12 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="@dimen/instruction_text_size"
+        android:textSize="@dimen/instruction_title_text_size"
         android:text="@string/instruction_one"
-        android:layout_marginTop="@dimen/margin_top_tvtwo"
         android:textColor="@android:color/white"
         android:textAlignment="center"
         android:id="@+id/second_instruction_screen_intro"
-        android:layout_below="@+id/first_instruction_screen_intro"
-        android:layout_alignParentStart="true" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="@dimen/instruction_text_size"
-        android:text="@string/instruction_four"
-        android:textColor="@android:color/white"
-        android:textAlignment="center"
-        android:id="@+id/third_instruction_screen_intro"
-        android:layout_marginTop="@dimen/margin_tvv"
-        android:layout_below="@+id/second_instruction_screen_intro"
+        android:layout_centerVertical="true"
         android:layout_alignParentStart="true" />
 
 

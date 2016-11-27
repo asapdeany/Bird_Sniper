@@ -8,14 +8,27 @@
     <string name="about_roll_string">Roll (y-axis rotation):</string>
     <string name="instruction_intro">Welcome to Fishin\' Time!</string>
     <string name="instruction_one">This game works by tilting the device. Touching the screen does nothing during gameplay.</string>
-    <string name="instruction_two">Tilt the device to the orientation you wish to play in.</string>
-    <string name="instruction_three">After pressing play, calibrate the game by using the arrows to move the fish inside the circle.</string>
+    <string name="instruction_two">Now tilt the device to the orientation you wish to play in.</string>
+    <string name="instruction_three">Use the arrows to move the fish inside the circle and press start.</string>
     <string name="instruction_four">Objective: Catch as many fish as possible before the ship reaches the other side.</string>
-    <string name="instruction_gp_one">Tilt device to move the hook.</string>
+    <string name="instruction_gp_one">Tilt device to move the hook and catch fish.</string>
     <string name="instruction_gp_two">Return hooked fish to the boat to increase score.</string>
     <string name="instruction_gp_three">Avoid sharks. They will eat all the current fish on your hook.</string>
     <string name="instruction_gp_four">Be conscious of the ships position.</string>
     <string name="downArrow">↓</string>
     <string name="upArrow">↑</string>
     <string name="instructions">Instructions</string>
+    <string name="practice_instructions_one">Hold the device level, so that the screen is facing directly upward.</string>
+    <string name="practice_instructions_two">Practice moving the shark around the screen!</string>
+    <string name="play">Play</string>
+    <string name="about">About</string>
+    <string name="about_paragraph">Fishin\' Time is an android game application created by Dean Sponholz. This game utlizes application serves to.
+        To avoid both, gyro drift and noisy orientation, the gyroscope output is applied only for orientation changes in short time intervals, while the magnetometer/acceletometer data is used as support information over long periods of time.
+        This is equivalent tolow-pass filtering of the accelerometer and magnetic field sensor signals and high-pass filtering of the gyroscope signals.
+        The resulting filter is called a Kalman Filter</string>
+    <string name="start">Start</string>
+    <string name="bottom_arrow">↓</string>
+    <string name="up_arrow">↑</string>
+    <string name="start_game">Start Game!</string>
+    <string name="menu">Menu</string>
 </resources>

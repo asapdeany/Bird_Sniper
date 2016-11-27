@@ -3,7 +3,7 @@
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:id="@+id/fragment_calibrate_instruction"
-    android:background="@color/instruction_two_Background">
+    android:background="@color/dodgerblue_three">
 
     <LinearLayout
         android:orientation="vertical"
@@ -15,26 +15,40 @@
 
         <Button
             android:text="@string/upArrow"
-            android:textColor="#FFFFFF"
-            android:textSize="30sp"
-            android:layout_width="100dp"
-            android:layout_height="75dp"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/text_size_button"
+            android:layout_width="@dimen/btton_size"
+            android:layout_height="@dimen/button_size_widthd"
             android:background="@drawable/buttonshape"
-            android:shadowColor="#000000"
+            android:shadowColor="@android:color/black"
             android:shadowDx="0"
             android:shadowDy="1"
             android:shadowRadius="0"
-            android:id="@+id/up_button_instruction"
-            android:layout_marginBottom="@dimen/gamebutton_ll_height_" />
+            android:id="@+id/up_button_instruction" />
+
+        <Button
+            android:text="@string/start"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/text_size_button_middle"
+            android:layout_width="@dimen/btton_size"
+            android:layout_height="@dimen/button_size_widthd"
+            android:background="@drawable/buttonshape"
+            android:shadowColor="@android:color/black"
+            android:shadowDx="0"
+            android:shadowDy="1"
+            android:shadowRadius="0"
+            android:layout_marginTop="@dimen/activity_vertical_margin"
+            android:layout_marginBottom="@dimen/activity_vertical_margin"
+            android:id="@+id/center_button_instruction" />
 
         <Button
             android:text="@string/downArrow"
-            android:textColor="#FFFFFF"
-            android:textSize="30sp"
-            android:layout_width="100dp"
-            android:layout_height="75dp"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/text_size_button"
+            android:layout_width="@dimen/btton_size"
+            android:layout_height="@dimen/button_size_widthd"
             android:background="@drawable/buttonshape"
-            android:shadowColor="#000000"
+            android:shadowColor="@android:color/black"
             android:shadowDx="0"
             android:shadowDy="1"
             android:shadowRadius="0"
@@ -45,8 +59,8 @@
         android:text="@string/instruction_three"
         android:layout_width="@dimen/gamebutton_II_height_LARGE"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="14dp"
-        android:textSize="29dp"
+        android:layout_marginEnd="@dimen/margin_top_gs"
+        android:textSize="@dimen/instruction_title_text_size"
         android:id="@+id/first_instruction_screen_one"
         android:layout_centerVertical="true"
         android:layout_alignParentEnd="true"

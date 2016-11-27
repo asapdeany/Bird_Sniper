@@ -3,7 +3,8 @@
     <color name="colorPrimary">#3f51b5</color>
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#ff4081</color>
-    <color name="instruction_intro_Background">#104E8B</color>
-    <color name="instructionBackground">#1874CD</color>
-    <color name="instruction_two_Background">#1E90FF</color>
+    <color name="dodgerblue_zero">#0c3966</color>
+    <color name="dodgerblue_one">#1564b2</color>
+    <color name="dodgerblue_two">#1b81e5</color>
+    <color name="dodgerblue_three">#349bff</color>
 </resources>

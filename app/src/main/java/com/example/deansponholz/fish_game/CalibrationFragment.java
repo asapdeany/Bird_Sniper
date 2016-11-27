@@ -187,21 +187,21 @@ public class CalibrationFragment extends Fragment {
             Log.d("screenWidth", Integer.toString(width));
             Log.d("screenHeight", Integer.toString(height));
             shipSpawnY = (float)(height * 0.2);
-            deviceCalibrateUp = 50;
-            deviceCalibrateDown = 50;
+            deviceCalibrateUp = 70;
+            deviceCalibrateDown = 70;
             fishSizeX = 90;
             fishSizeY = 70;
             lineX = 50;
             lineY = 30;
-
         }
+        
         if (screenInches < 6.0){
             Log.d("SmallDevice", Double.toString(screenInches));
             Log.d("screenWidth", Integer.toString(width));
             Log.d("screenHeight", Integer.toString(height));
             shipSpawnY = (float)(height * 0.1);
-            deviceCalibrateUp = 35;
-            deviceCalibrateDown = 35;
+            deviceCalibrateUp = 50;
+            deviceCalibrateDown = 50;
             fishSizeX = 80;
             fishSizeY = 60;
             lineX = 50;
@@ -211,6 +211,7 @@ public class CalibrationFragment extends Fragment {
 
         yOffset = (height / 2) - 60;
         xOffset = (width / 2) - 55;
+
 
     }
 

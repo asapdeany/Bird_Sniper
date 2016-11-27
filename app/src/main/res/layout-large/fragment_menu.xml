@@ -1,25 +1,47 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="wrap_content"
-    android:layout_height="wrap_content">
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/menu_layout">
 
-    <Button
-        android:text="Play"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:orientation="horizontal"
         android:layout_height="wrap_content"
-        android:id="@+id/play_button"
-        android:background="@android:color/background_dark" />
-
-    <Button
-        android:text="About"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/about_button" />
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true">
 
-    <Button
-        android:text="Instructions"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/instructions_button" />
 
-</LinearLayout>
+        <Button
+            android:text="@string/instructions"
+            android:background="@drawable/buttonshape_menu"
+            android:layout_width="@dimen/button_size_layout_large"
+            android:layout_height="@dimen/button_size_layout_large"
+            android:id="@+id/instructions_button"
+            android:textSize="@dimen/about_text_size"
+            android:textColor="@android:color/white" />
+
+        <Button
+            android:text="@string/play"
+            android:id="@+id/play_button"
+            android:background="@drawable/buttonshape_menu"
+            android:layout_width="@dimen/button_size_layout_large"
+            android:layout_height="150dp"
+            android:textSize="@dimen/about_text_size"
+            android:layout_marginLeft="@dimen/button_margin_large"
+            android:layout_marginRight="@dimen/button_margin_large"
+            android:textColor="@android:color/white"/>
+
+        <Button
+            android:text="@string/about"
+            android:background="@drawable/buttonshape_menu"
+            android:layout_width="@dimen/button_size_layout_large"
+            android:layout_height="@dimen/button_size_layout_large"
+            android:id="@+id/about_button"
+            android:textSize="@dimen/about_text_size"
+            android:textColor="@android:color/white"/>
+
+    </LinearLayout>
+
+</RelativeLayout>

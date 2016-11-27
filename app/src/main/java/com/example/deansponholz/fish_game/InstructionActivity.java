@@ -15,7 +15,7 @@ import android.widget.RadioGroup;
 public class InstructionActivity extends FragmentActivity implements ViewPager.OnPageChangeListener, RadioGroup.OnCheckedChangeListener{
 
     private RadioGroup radioGroup;
-    private static final int NUMBER_OF_PAGES = 4;
+    private static final int NUMBER_OF_PAGES = 5;
     ViewPager pager;
 
     @Override
@@ -64,6 +64,9 @@ public class InstructionActivity extends FragmentActivity implements ViewPager.O
             case 3:
                 radioGroup.check(R.id.radioButton4);
                 break;
+            case 4:
+                radioGroup.check(R.id.radioButton5);
+                break;
             default:
                 radioGroup.check(R.id.radioButton1);
         }
@@ -98,6 +101,9 @@ public class InstructionActivity extends FragmentActivity implements ViewPager.O
             case R.id.radioButton4:
                 pager.setCurrentItem(3);
                 break;
+            case R.id.radioButton5:
+                pager.setCurrentItem(4);
+                break;
         }
     }
 
@@ -113,16 +119,17 @@ public class InstructionActivity extends FragmentActivity implements ViewPager.O
             switch(pos) {
 
                 case 0: return Instruction_intro_Fragment.newInstance();
-                case 1: return Instruction_one_Fragment.newInstance();
-                case 2: return Instruction_two_Fragment.newInstance();
-                case 3: return Instruction_three_Fragment.newInstance();
-                default: return Instruction_one_Fragment.newInstance();
+                case 1: return Instruction_gamescreen_Fragment.newInstance();
+                case 2: return Instruction_practice_Fragment.newInstance();
+                case 3: return Instruction_tilt_Fragment.newInstance();
+                case 4: return Instruction_calibrate_Fragment.newInstance();
+                default: return Instruction_intro_Fragment.newInstance();
             }
         }
 
         @Override
         public int getCount() {
-            return 4;
+            return 5;
         }
     }
 }

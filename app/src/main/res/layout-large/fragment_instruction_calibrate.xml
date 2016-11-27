@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/fragment_calibrate">
+    android:id="@+id/fragment_calibrate_instruction"
+    android:background="@color/dodgerblue_three">
 
     <LinearLayout
         android:orientation="vertical"
@@ -11,10 +11,10 @@
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
         android:layout_alignParentStart="true"
-        android:layout_marginLeft="@dimen/activity_vertical_margin">
+        android:layout_marginLeft="@dimen/gamebutton_ll_height_">
 
         <Button
-            android:text="@string/up_arrow"
+            android:text="@string/upArrow"
             android:textColor="@android:color/white"
             android:textSize="@dimen/text_size_button"
             android:layout_width="@dimen/btton_size"
@@ -24,7 +24,7 @@
             android:shadowDx="0"
             android:shadowDy="1"
             android:shadowRadius="0"
-            android:id="@+id/up_button" />
+            android:id="@+id/up_button_instruction" />
 
         <Button
             android:text="@string/start"
@@ -39,10 +39,10 @@
             android:shadowRadius="0"
             android:layout_marginTop="@dimen/activity_vertical_margin"
             android:layout_marginBottom="@dimen/activity_vertical_margin"
-            android:id="@+id/center_calibrate_button" />
+            android:id="@+id/center_button_instruction" />
 
         <Button
-            android:text="@string/bottom_arrow"
+            android:text="@string/downArrow"
             android:textColor="@android:color/white"
             android:textSize="@dimen/text_size_button"
             android:layout_width="@dimen/btton_size"
@@ -52,6 +52,18 @@
             android:shadowDx="0"
             android:shadowDy="1"
             android:shadowRadius="0"
-            android:id="@+id/down_button" />
+            android:id="@+id/down_button_instruction" />
     </LinearLayout>
+
+    <TextView
+        android:text="@string/instruction_three"
+        android:layout_width="@dimen/gamebutton_II_height_LARGE"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/gamebutton_ll_height_"
+        android:textSize="@dimen/big_text_size"
+        android:id="@+id/first_instruction_screen_one"
+        android:layout_centerVertical="true"
+        android:layout_alignParentEnd="true"
+        android:textColor="@android:color/white"
+        android:textAlignment="center" />
 </RelativeLayout>

@@ -10,7 +10,8 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.NoActionBar">
         <activity android:name="com.example.deansponholz.fish_game.MenuActivity"
-            android:label="Fishin' Time">
+            android:label="Fishin' Time"
+            android:screenOrientation="landscape">
             <intent-filter >
                 <action android:name="android.intent.action.MAIN" />
 

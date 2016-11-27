@@ -22,17 +22,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
 
 /**
  * Created by deansponholz on 11/23/16.
  */
 
-public class Instruction_two_Fragment extends Fragment {
+public class Instruction_calibrate_Fragment extends Fragment {
 
-    Button up_button, down_button;
+    Button up_button, down_button, center_button;
 
     public static float yOffset, xOffset;
 
@@ -42,9 +40,6 @@ public class Instruction_two_Fragment extends Fragment {
     int lineX, lineY;
     int fishSizeX, fishSizeY;
 
-
-
-    public Rect sprite1Bounds = new Rect(0,0,0,0);
 
     Display display;
     WindowManager wm;
@@ -59,7 +54,7 @@ public class Instruction_two_Fragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View root = inflater.inflate(R.layout.fragment_instruction_two, container, false);
+        View root = inflater.inflate(R.layout.fragment_instruction_calibrate, container, false);
 
 
         wm = (WindowManager) root.getContext().getSystemService(Context.WINDOW_SERVICE);
@@ -72,19 +67,29 @@ public class Instruction_two_Fragment extends Fragment {
 
         this.up_button = (Button) root.findViewById(R.id.up_button_instruction);
         this.down_button = (Button) root.findViewById(R.id.down_button_instruction);
+        this.center_button = (Button) root.findViewById(R.id.center_button_instruction);
 
         up_button.setOnTouchListener(new RepeatListener(400, 100, new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                yOffset = yOffset - deviceCalibrateUp;
+                CalibrationFragment.yOffset = CalibrationFragment.yOffset - deviceCalibrateUp;
                 Log.d("yOffsetbefore", Double.toString(yOffset));
             }
         }));
 
+        center_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d("yOffsetbefore", Double.toString(yOffset));
+                Intent intent = new Intent(getActivity(), HUDActivity.class);
+                getActivity().startActivity(intent);
+            }
+        });
+
         down_button.setOnTouchListener(new RepeatListener(400, 100, new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                yOffset = yOffset + deviceCalibrateDown;
+                CalibrationFragment.yOffset = CalibrationFragment.yOffset + deviceCalibrateDown;
                 //yOffset = height / 2;
                 Log.d("yOffsetbefore", Double.toString(yOffset));
             }
@@ -92,9 +97,9 @@ public class Instruction_two_Fragment extends Fragment {
         return root;
     }
 
-    public static Instruction_two_Fragment newInstance() {
+    public static Instruction_calibrate_Fragment newInstance() {
 
-        Instruction_two_Fragment f = new Instruction_two_Fragment();
+        Instruction_calibrate_Fragment f = new Instruction_calibrate_Fragment();
         return f;
     }
     public class InstructionDrawView extends View {
@@ -138,8 +143,8 @@ public class Instruction_two_Fragment extends Fragment {
         public void onDraw(Canvas canvas){
             canvas.drawCircle(width/2, height/2, 50, paint);
 
-            fishX = (float) (-sensorHandler.xPos*15) + xOffset;
-            fishY = (float) (sensorHandler.yPos * 15) + yOffset;
+            fishX = (float) (-sensorHandler.xPos*15) + CalibrationFragment.xOffset;
+            fishY = (float) (sensorHandler.yPos * 15) + CalibrationFragment.yOffset;
 
 
 
@@ -203,8 +208,8 @@ public class Instruction_two_Fragment extends Fragment {
         }
 
 
-        yOffset = (height / 2) - 60;
-        xOffset = (width / 2) - 55;
+        CalibrationFragment.yOffset = (height / 2) - 60;
+        CalibrationFragment.xOffset = (width / 2) - 55;
 
     }
 

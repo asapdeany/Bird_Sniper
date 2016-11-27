@@ -1,16 +1,14 @@
 package com.example.deansponholz.fish_game;
 
-import android.app.Fragment;
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Point;
+import android.support.v4.app.Fragment;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Display;
@@ -18,85 +16,58 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.widget.Button;
 import android.widget.RelativeLayout;
 
 /**
- * Created by deansponholz on 11/3/16.
+ * Created by deansponholz on 11/26/16.
  */
 
-public class MenuFragment extends Fragment {
+public class Instruction_practice_Fragment extends Fragment {
 
-    Button play_button = null;
-    Button about_button = null;
-    Button instruction_button = null;
-
-    public SensorHandler sensorHandler = null;
+    public static float yOffset, xOffset;
+    private static final int LINE_SPACING = 80;
+    float fishX, fishY;
+    int fishSizeX, fishSizeY;
     Display display;
     WindowManager wm;
     Point size;
     int width;
     int height;
-    public static float yOffset, xOffset;
-    private static final int LINE_SPACING = 80;
+    public SensorHandler sensorHandler = null;
 
-
-    @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View root = inflater.inflate(R.layout.fragment_menu, container, false);
+        View root = inflater.inflate(R.layout.fragment_instruction_practice, container, false);
+
 
         wm = (WindowManager) root.getContext().getSystemService(Context.WINDOW_SERVICE);
         offSetCalculator();
         sensorHandler = new SensorHandler(root.getContext());
 
-        RelativeLayout fragment_menu = (RelativeLayout) root.findViewById(R.id.menu_layout);
-        MenuDrawView menuDrawView = new MenuDrawView(this.getActivity());
-        fragment_menu.addView(menuDrawView);
-        this.play_button = (Button) root.findViewById(R.id.play_button);
-        this.about_button = (Button) root.findViewById(R.id.about_button);
-        this.instruction_button = (Button) root.findViewById(R.id.instructions_button);
-
-
-        play_button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(getActivity(), CalibrationActivity.class);
-                getActivity().startActivity(intent);
-            }
-        });
-
-        about_button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(getActivity(), AboutActivity.class);
-                getActivity().startActivity(intent);
-            }
-        });
-
-        instruction_button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(getActivity(), InstructionActivity.class);
-                getActivity().startActivity(intent);
-            }
-        });
-
-
+        RelativeLayout fragment_practice = (RelativeLayout) root.findViewById(R.id.fragment_practice);
+        PracticeDrawView practiceDrawView = new PracticeDrawView(this.getActivity());
+        fragment_practice.addView(practiceDrawView);
         return root;
     }
 
-    public class MenuDrawView extends View {
+    public static Instruction_practice_Fragment newInstance() {
 
+        Instruction_practice_Fragment f = new Instruction_practice_Fragment();
+        return f;
+    }
+    public class PracticeDrawView extends View {
 
+        //BitMaps
+        Bitmap fish = BitmapFactory.decodeResource(getResources(), R.drawable.shark);
+        Bitmap resizedFish = Bitmap.createScaledBitmap(fish, fishSizeX, fishSizeY, false);
 
 
         //onDraw
         Canvas canvas;
         Paint paint = new Paint();
-        float fishX, fishY;
 
-        public MenuDrawView(Context context) {
+
+        public PracticeDrawView(Context context) {
             super(context);
             initMyView();
         }
@@ -107,7 +78,7 @@ public class MenuFragment extends Fragment {
             //Drawing Tools
             canvas = new Canvas();
             paint = new Paint();
-            paint.setColor(Color.BLACK);
+            paint.setColor(Color.WHITE);
             paint.setStrokeWidth(1.0f);
             paint.setStyle(Paint.Style.STROKE);
 
@@ -116,34 +87,35 @@ public class MenuFragment extends Fragment {
         @Override
         public void onDraw(Canvas canvas){
 
-            fishX = (float) (-sensorHandler.xPos * 5) + xOffset;
-            fishY = (float) (sensorHandler.yPos * 5) + yOffset;
+            fishX = (float) (-sensorHandler.xPos*15) + xOffset;
+            fishY = (float) (sensorHandler.yPos * 15) + yOffset;
 
 
 
 
             //Loop through to create 10 vertical lines
             for (int i = 1; i < 15; i++) {
-                canvas.drawLine(fishX + (i * LINE_SPACING), -height, fishX + (i * LINE_SPACING), +height, paint);
+                canvas.drawLine(width/2 + (i * LINE_SPACING), -height, width/2 + (i * LINE_SPACING), +height, paint);
 
             }
             for (int i = 1; i < 15; i++) {
-                canvas.drawLine(fishX + (i * -LINE_SPACING), -height, fishX + (i * -LINE_SPACING), +height, paint);
+                canvas.drawLine(width/2 + (i * -LINE_SPACING), -height, width/2 + (i * -LINE_SPACING), +height, paint);
 
             }
 
             //Loop through to create 10 horizontal lines
             for (int i = 1; i < 15; i++) {
-                canvas.drawLine(0, fishY + (i * LINE_SPACING), width, fishY + (i * LINE_SPACING), paint);
+                canvas.drawLine(0, width/2 + (i * LINE_SPACING), width, width/2 + (i * LINE_SPACING), paint);
 
             }
             for (int i = 1; i < 15; i++) {
-                canvas.drawLine(0, fishY - (i * LINE_SPACING), width, fishY - (i * LINE_SPACING), paint);
+                canvas.drawLine(0, width/2 - (i * LINE_SPACING), width, width/2 - (i * LINE_SPACING), paint);
             }
             //middle vertical line from landscape point of view
-            canvas.drawLine(fishX, -height, fishX, height, paint);
+            canvas.drawLine(width/2, -height, width/2, height, paint);
             //middle horizontal line from landscape point of view
-            canvas.drawLine(0, fishY, width, fishY, paint);
+            canvas.drawLine(0, width/2, width, width/2, paint);
+            canvas.drawBitmap(resizedFish, fishX, fishY, paint);
             invalidate();
         }
     }
@@ -175,7 +147,8 @@ public class MenuFragment extends Fragment {
             Log.d("BigDevice", Double.toString(screenInches));
             Log.d("screenWidth", Integer.toString(width));
             Log.d("screenHeight", Integer.toString(height));
-
+            fishSizeX = 90;
+            fishSizeY = 70;
 
 
         }
@@ -183,7 +156,8 @@ public class MenuFragment extends Fragment {
             Log.d("SmallDevice", Double.toString(screenInches));
             Log.d("screenWidth", Integer.toString(width));
             Log.d("screenHeight", Integer.toString(height));
-
+            fishSizeX = 80;
+            fishSizeY = 60;
         }
 
 
@@ -191,4 +165,5 @@ public class MenuFragment extends Fragment {
         xOffset = (width / 2) - 55;
 
     }
+
 }

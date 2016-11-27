@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/dodgerblue_one"
+    android:id="@+id/fragment_practice">
+
+    <TextView
+        android:text="@string/practice_instructions_two"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/textView6"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="@dimen/margin_bottom_tv"
+        android:id="@+id/textView8"
+        android:textSize="@dimen/about_text_size"
+        android:textColor="@android:color/white"
+        android:textStyle="bold" />
+
+    <TextView
+        android:text="@string/practice_instructions_one"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/_margin_top_graph"
+        android:id="@+id/textView6"
+        android:textSize="@dimen/practiceTextSize"
+        android:textColor="@android:color/white"
+        android:textStyle="bold"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true" />
+
+</RelativeLayout>
