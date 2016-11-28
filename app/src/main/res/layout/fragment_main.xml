@@ -1,46 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical" android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
     android:id="@+id/fragment_main">
 
-    <LinearLayout
-        android:orientation="horizontal"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentEnd="true">
-
-        <Button
-            android:text="@string/menu"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/menu_button" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/scoreTextView"
-            android:textColor="@android:color/black"
-            android:textSize="@dimen/about_text_size" />
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textColor="@android:color/black"
-            android:textSize="@dimen/about_text_size"
-            android:id="@+id/hookCountTextView" />
-
-    </LinearLayout>
 
     <Button
+        android:id="@+id/startGameButton"
         android:text="@string/start_game"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:textColor="@android:color/black"
+        android:textSize="@dimen/text_size_button"
+        android:layout_height="@dimen/button_margin_large"
+        android:background="@drawable/buttonshape_gameplay"
+        android:layout_width="@dimen/button_margin_large"
+        android:layout_centerVertical="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="@dimen/margin_end_button" />
+
+    <Button
+        android:text="@string/menu"
+        android:background="@drawable/buttonshape_gameplay"
+        android:layout_width="@dimen/gamebutton_ll_height_"
+        android:layout_height="@dimen/iv_margin_end"
+        android:id="@+id/menu_button"
+        android:layout_marginLeft="@dimen/margin_score_center"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="@dimen/button_margin_large"
-        android:id="@+id/startGameButton" />
+        android:textColor="@android:color/black"
+        android:textSize="@dimen/about_text_size" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/scoreTextView"
+        android:textSize="@dimen/score_text_size"
+        android:text="@string/zero"
+        android:layout_marginLeft="@dimen/margin_score_center"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true" />
 
 </RelativeLayout>

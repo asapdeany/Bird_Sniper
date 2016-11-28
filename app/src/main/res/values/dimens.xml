@@ -37,4 +37,9 @@
     <dimen name="text_size_button_middle">22.5sp</dimen>
     <dimen name="_margintop">25dp</dimen>
     <dimen name="_margin_top_graph">44dp</dimen>
+    <dimen name="score_text_size">80sp</dimen>
+    <dimen name="score_margin">58dp</dimen>
+    <dimen name="margin_score_center">280dp</dimen>
+    <dimen name="margin_end_button">45dp</dimen>
+    <dimen name="score_text_size_big">130sp</dimen>
 </resources>

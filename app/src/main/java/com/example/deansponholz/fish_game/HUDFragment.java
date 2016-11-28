@@ -56,7 +56,7 @@ public class HUDFragment extends Fragment {
 
     //Views and Score
     TextView score_TextView = null;
-    TextView hookCount_TextView = null;
+    //TextView hookCount_TextView = null;
     Button menu_Button = null;
     Button startGame_Button = null;
     int gameScore, hookCount;
@@ -109,7 +109,7 @@ public class HUDFragment extends Fragment {
 
         //Fragment and buttons
         fragment_main = (RelativeLayout) root.findViewById(R.id.fragment_main);
-        this.hookCount_TextView = (TextView) root.findViewById(R.id.hookCountTextView);
+        //this.hookCount_TextView = (TextView) root.findViewById(R.id.hookCountTextView);
         this.score_TextView = (TextView) root.findViewById(R.id.scoreTextView);
         this.menu_Button = (Button) root.findViewById(R.id.menu_button);
         this.startGame_Button = (Button) root.findViewById(R.id.startGameButton);
@@ -124,7 +124,7 @@ public class HUDFragment extends Fragment {
             public void onClick(View v) {
                 gameStarted = true;
                 startGame_Button.setClickable(false);
-                startGame_Button.setVisibility(View.GONE);
+                startGame_Button.setVisibility(View.INVISIBLE);
                 hookCount = 0;
                 gameScore = 0;
                 hook = Bitmap.createScaledBitmap(hookDrawable, hookSizeX, hookSizeY, false);
@@ -199,7 +199,7 @@ public class HUDFragment extends Fragment {
                     else if (x == -1){
                         spawnFishLeft();
                     }
-                    spawnHandler.postDelayed(this, 1350);
+                    spawnHandler.postDelayed(this, 850);
                 }
             };
             spawnShark = new Runnable() {
@@ -213,7 +213,7 @@ public class HUDFragment extends Fragment {
                     else if (x == -1){
                         spawnSharkLeft();
                     }
-                    spawnHandler.postDelayed(this, 2500);
+                    spawnHandler.postDelayed(this, 3000);
                 }
             };
 
@@ -344,7 +344,7 @@ public class HUDFragment extends Fragment {
             ObjectAnimator translateYAnimation= ObjectAnimator.ofFloat(sharkView, "translationY", randEnd);
 
             AnimatorSet set = new AnimatorSet();
-            set.setDuration(8000);
+            set.setDuration(10000);
             set.playTogether(translateXAnimation, translateYAnimation);
             set.start();
 
@@ -400,7 +400,7 @@ public class HUDFragment extends Fragment {
             ObjectAnimator translateYAnimation= ObjectAnimator.ofFloat(sharkView, "translationY", randEnd);
 
             AnimatorSet set = new AnimatorSet();
-            set.setDuration(8000);
+            set.setDuration(10000);
             set.playTogether(translateXAnimation, translateYAnimation);
             set.start();
 
@@ -626,8 +626,8 @@ public class HUDFragment extends Fragment {
 
         public void onDraw(Canvas canvas){
             //update Score
-            hookCount_TextView.setText("Hook Count: " + Integer.toString(hookCount));
-            score_TextView.setText("Total Score: " + Integer.toString(gameScore));
+            //hookCount_TextView.setText("Hook Count: " + Integer.toString(hookCount));
+            score_TextView.setText(Integer.toString(gameScore));
             //draw hook and line
             drawFishLine(canvas);
 
