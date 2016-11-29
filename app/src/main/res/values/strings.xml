@@ -22,7 +22,7 @@
     <string name="practice_instructions_two">Practice moving the shark around the screen!</string>
     <string name="play">Play</string>
     <string name="about">About</string>
-    <string name="about_paragraph">Fishin\' Time is an android game application created by Dean Sponholz. This game utlizes application serves to.
+    <string name="about_paragraph">Fishin\' Time is an android game application created by Dean Sponholz and Josh LastName.
         To avoid both, gyro drift and noisy orientation, the gyroscope output is applied only for orientation changes in short time intervals, while the magnetometer/acceletometer data is used as support information over long periods of time.
         This is equivalent tolow-pass filtering of the accelerometer and magnetic field sensor signals and high-pass filtering of the gyroscope signals.
         The resulting filter is called a Kalman Filter</string>
