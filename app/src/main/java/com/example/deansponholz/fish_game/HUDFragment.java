@@ -59,6 +59,7 @@ public class HUDFragment extends Fragment {
     //TextView hookCount_TextView = null;
     Button menu_Button = null;
     Button startGame_Button = null;
+    Button submitScore_Button = null;
     int gameScore, hookCount;
 
     //flip bitmap function
@@ -71,12 +72,12 @@ public class HUDFragment extends Fragment {
     Runnable spawnShark;
 
     //Fish Bitmaps and position
-    Bitmap fish1, fish2, fish3;
+    Bitmap fish1, fish2, fish3, fish1flip, fish2flip, fish3flip;
     Bitmap leftFish, rightFish;
     float spawnedFishXPosition, spawnedFishYPosition;
 
     //Shark bitmap and position
-    Bitmap shark1, shark2;
+    Bitmap shark1, shark2, shark1flip, shark2flip;
     Bitmap leftShark, rightShark;
     float spawnedSharkXPosition, spawnedSharkYPosition;
 
@@ -89,7 +90,7 @@ public class HUDFragment extends Fragment {
 
     //Hook Bitmap, Position, Offset, and Collision Detection rectangle values
     Bitmap hookDrawable;
-    Bitmap hookcaught1, hookcaught2, hookcaught3;
+    Bitmap hookNormal, hookcaught1, hookcaught2, hookcaught3;
     Bitmap hook;
     float hookX, hookY;
     int hookSizeX, hookSizeY;
@@ -113,6 +114,7 @@ public class HUDFragment extends Fragment {
         this.score_TextView = (TextView) root.findViewById(R.id.scoreTextView);
         this.menu_Button = (Button) root.findViewById(R.id.menu_button);
         this.startGame_Button = (Button) root.findViewById(R.id.startGameButton);
+        this.submitScore_Button = (Button) root.findViewById(R.id.submitScoreButton);
 
         //Custom Draw View
         final HUDDrawView hudDrawView = new HUDDrawView(this.getActivity());
@@ -125,9 +127,10 @@ public class HUDFragment extends Fragment {
                 gameStarted = true;
                 startGame_Button.setClickable(false);
                 startGame_Button.setVisibility(View.INVISIBLE);
+                submitScore_Button.setVisibility(View.INVISIBLE);
                 hookCount = 0;
                 gameScore = 0;
-                hook = Bitmap.createScaledBitmap(hookDrawable, hookSizeX, hookSizeY, false);
+                hook = hookNormal;
                 hudDrawView.startGame();
 
             }
@@ -255,6 +258,9 @@ public class HUDFragment extends Fragment {
                     startGame_Button.setVisibility(VISIBLE);
                     startGame_Button.setText("Play Again");
                     startGame_Button.setClickable(true);
+
+                    submitScore_Button.setVisibility(VISIBLE);
+                    submitScore_Button.setClickable(true);
                 }
 
                 @Override
@@ -285,7 +291,7 @@ public class HUDFragment extends Fragment {
                     if (isCollisionShipHook(pirateShip, (int)shipXPosition, (int)shipYPosition, hook, (int)hookX, (int)hookY) == true){
                         gameScore = gameScore + hookCount;
                         hookCount = 0;
-                        hook = Bitmap.createScaledBitmap(hookDrawable, hookSizeX, hookSizeY, false);
+                        hook = hookNormal;
                     }
                 }
             });
@@ -299,11 +305,11 @@ public class HUDFragment extends Fragment {
 
             ImageView myImage = new ImageView(getContext());
             if (sharkRand == 1){
-                leftShark = Bitmap.createScaledBitmap(shark1, sharkSizeX, sharkSizeY, false);
+                leftShark = shark1;
                 myImage.setImageBitmap(leftShark);
             }
             if (sharkRand == 2){
-                leftShark = Bitmap.createScaledBitmap(shark2, sharkSizeX, sharkSizeY, false);
+                leftShark = shark2;
                 myImage.setImageBitmap(leftShark);
             }
 
@@ -322,11 +328,11 @@ public class HUDFragment extends Fragment {
 
             ImageView myImage = new ImageView(getContext());
             if (sharkRand == 1){
-                rightShark = Bitmap.createScaledBitmap(flip(shark1, 2), sharkSizeX, sharkSizeY, false);
+                rightShark = shark1flip;
                 myImage.setImageBitmap(rightShark);
             }
             if (sharkRand == 2){
-                rightShark = Bitmap.createScaledBitmap(flip(shark2, 2), sharkSizeX, sharkSizeY, false);
+                rightShark = shark2flip;
                 myImage.setImageBitmap(rightShark);
             }
 
@@ -377,7 +383,7 @@ public class HUDFragment extends Fragment {
                     //check for collision
                     if (isCollisionDetectedSharkHook(rightShark, (int) spawnedSharkXPosition, (int) spawnedSharkYPosition, hook, (int)hookX, (int)hookY) == true){
                         hookCount = 0;
-                        hook = Bitmap.createScaledBitmap(hookDrawable, hookSizeX, hookSizeY, false);
+                        hook = hookNormal;
                         hookPaint.setColor(Color.RED);
                         hookPaint.setStrokeWidth(5.25f);
                         final Handler handler = new Handler();
@@ -433,7 +439,7 @@ public class HUDFragment extends Fragment {
                     //check for collision
                     if (isCollisionDetectedSharkHook(leftShark, (int) spawnedSharkXPosition, (int) spawnedSharkYPosition, hook, (int)hookX, (int)hookY) == true){
                         hookCount = 0;
-                        hook = Bitmap.createScaledBitmap(hookDrawable, hookSizeX, hookSizeY, false);
+                        hook = hookNormal;
                         hookPaint.setColor(Color.RED);
                         hookPaint.setStrokeWidth(5.25f);
                         final Handler handler = new Handler();
@@ -459,15 +465,18 @@ public class HUDFragment extends Fragment {
 
             ImageView myImage = new ImageView(getContext());
             if (fishRand == 1){
-                leftFish = Bitmap.createScaledBitmap(fish1, fishSizeX, fishSizeY, false);
+                //leftFish = Bitmap.createScaledBitmap(fish1, fishSizeX, fishSizeY, false);
+                leftFish = fish1;
                 myImage.setImageBitmap(leftFish);
             }
             if (fishRand == 2){
-                leftFish = Bitmap.createScaledBitmap(fish2, fishSizeX, fishSizeY, false);
+                //leftFish = Bitmap.createScaledBitmap(fish2, fishSizeX, fishSizeY, false);
+                leftFish = fish2;
                 myImage.setImageBitmap(leftFish);
             }
             if (fishRand == 3){
-                leftFish = Bitmap.createScaledBitmap(fish3, fishSizeX, fishSizeY, false);
+                //leftFish = Bitmap.createScaledBitmap(fish3, fishSizeX, fishSizeY, false);
+                leftFish = fish3;
                 myImage.setImageBitmap(leftFish);
             }
 
@@ -486,15 +495,15 @@ public class HUDFragment extends Fragment {
 
             ImageView myImage = new ImageView(getContext());
             if (fishRand == 1){
-                rightFish = Bitmap.createBitmap(flip(Bitmap.createScaledBitmap(fish1, fishSizeX, fishSizeY, false), 2));
+                rightFish = fish1flip;
                 myImage.setImageBitmap(rightFish);
             }
             if (fishRand == 2){
-                rightFish = Bitmap.createBitmap(flip(Bitmap.createScaledBitmap(fish2, fishSizeX, fishSizeY, false), 2));
+                rightFish = fish2flip;
                 myImage.setImageBitmap(rightFish);
             }
             if (fishRand == 3){
-                rightFish = Bitmap.createBitmap(flip(Bitmap.createScaledBitmap(fish3, fishSizeX, fishSizeY, false), 2));
+                rightFish = fish3flip;
                 myImage.setImageBitmap(rightFish);
             }
 
@@ -555,13 +564,16 @@ public class HUDFragment extends Fragment {
                         animation.removeAllUpdateListeners();
                     }
                     if (hookCount >= 1){
-                        hook = Bitmap.createScaledBitmap(hookcaught1, hookSizeX, hookSizeY, false);
+                        //hook = Bitmap.createScaledBitmap(hookcaught1, hookSizeX, hookSizeY, false);
+                        hook = hookcaught1;
                     }
                     if (hookCount >= 5){
-                        hook = Bitmap.createScaledBitmap(hookcaught2, hookSizeX, hookSizeY, false);
+                        //hook = Bitmap.createScaledBitmap(hookcaught2, hookSizeX, hookSizeY, false);
+                        hook = hookcaught2;
                     }
                     if (hookCount >= 10){
-                        hook = Bitmap.createScaledBitmap(hookcaught3, hookSizeX, hookSizeY, false);
+                        //hook = Bitmap.createScaledBitmap(hookcaught3, hookSizeX, hookSizeY, false);
+                        hook = hookcaught3;
                     }
                 }
             });
@@ -612,13 +624,16 @@ public class HUDFragment extends Fragment {
                         animation.removeAllUpdateListeners();
                     }
                     if (hookCount >= 1){
-                        hook = Bitmap.createScaledBitmap(hookcaught1, hookSizeX, hookSizeY, false);
+                        //hook = Bitmap.createScaledBitmap(hookcaught1, hookSizeX, hookSizeY, false);
+                        hook = hookcaught1;
                     }
                     if (hookCount >= 5){
-                        hook = Bitmap.createScaledBitmap(hookcaught2, hookSizeX, hookSizeY, false);
+                        //hook = Bitmap.createScaledBitmap(hookcaught2, hookSizeX, hookSizeY, false);
+                        hook = hookcaught2;
                     }
                     if (hookCount >= 10){
-                        hook = Bitmap.createScaledBitmap(hookcaught3, hookSizeX, hookSizeY, false);
+                       //hook = Bitmap.createScaledBitmap(hookcaught3, hookSizeX, hookSizeY, false);
+                        hook = hookcaught3;
                     }
                 }
             });
@@ -688,13 +703,26 @@ public class HUDFragment extends Fragment {
             shipSpawnY = (float)(height * 0.055);
             fishSizeX = 80;
             fishSizeY = 60;
+            fish1 = Bitmap.createScaledBitmap(fish1, fishSizeX, fishSizeY, false);
+            fish2 = Bitmap.createScaledBitmap(fish2, fishSizeX, fishSizeY, false);
+            fish3 = Bitmap.createScaledBitmap(fish3, fishSizeX, fishSizeY, false);
+            fish1flip = flip(fish1, 2);
+            fish2flip = flip(fish2, 2);
+            fish3flip = flip(fish3, 2);
             sharkSizeX = 235;
             sharkSizeY = 143;
+            shark1 = Bitmap.createScaledBitmap(shark1, sharkSizeX, sharkSizeY, false);
+            shark2 = Bitmap.createScaledBitmap(shark2, sharkSizeX, sharkSizeY, false);
+            shark1flip = Bitmap.createBitmap(flip(shark1, 2));
+            shark2flip = Bitmap.createBitmap(flip(shark2, 2));
             pirateShip = Bitmap.createBitmap(pship);
             hookSizeX = 150;
             hookSizeY = 150;
             hook = Bitmap.createScaledBitmap(hookDrawable, hookSizeX, hookSizeY, false);
-
+            hookNormal = Bitmap.createScaledBitmap(hookDrawable, hookSizeX, hookSizeY, false);
+            hookcaught1 = Bitmap.createScaledBitmap(hookcaught1, hookSizeX, hookSizeY, false);
+            hookcaught2 = Bitmap.createScaledBitmap(hookcaught2, hookSizeX, hookSizeY, false);
+            hookcaught3 = Bitmap.createScaledBitmap(hookcaught3, hookSizeX, hookSizeY, false);
             hookOffsetX = 85;
             hookOffsetY = 40;
             hookLeft = 45;
@@ -712,12 +740,26 @@ public class HUDFragment extends Fragment {
             shipSpawnY = (float)(height * 0.055);
             fishSizeX = 70;
             fishSizeY = 50;
+            fish1 = Bitmap.createScaledBitmap(fish1, fishSizeX, fishSizeY, false);
+            fish2 = Bitmap.createScaledBitmap(fish2, fishSizeX, fishSizeY, false);
+            fish3 = Bitmap.createScaledBitmap(fish3, fishSizeX, fishSizeY, false);
+            fish1flip = flip(fish1, 2);
+            fish2flip = flip(fish2, 2);
+            fish3flip = flip(fish3, 2);
             sharkSizeX = 195;
             sharkSizeY = 97;
+            shark1 = Bitmap.createScaledBitmap(shark1, sharkSizeX, sharkSizeY, false);
+            shark2 = Bitmap.createScaledBitmap(shark2, sharkSizeX, sharkSizeY, false);
+            shark1flip = Bitmap.createBitmap(flip(shark1, 2));
+            shark2flip = Bitmap.createBitmap(flip(shark2, 2));
             hookSizeX = 100;
             hookSizeY = 100;
             pirateShip = Bitmap.createScaledBitmap(pship, 135, 135, false);
             hook = Bitmap.createScaledBitmap(hookDrawable, hookSizeX, hookSizeY, false);
+            hookNormal = Bitmap.createScaledBitmap(hookDrawable, hookSizeX, hookSizeY, false);
+            hookcaught1 = Bitmap.createScaledBitmap(hookcaught1, hookSizeX, hookSizeY, false);
+            hookcaught2 = Bitmap.createScaledBitmap(hookcaught2, hookSizeX, hookSizeY, false);
+            hookcaught3 = Bitmap.createScaledBitmap(hookcaught3, hookSizeX, hookSizeY, false);
             hookOffsetX = 55;
             hookOffsetY = 25;
             hookLeft = 25;

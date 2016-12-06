@@ -7,6 +7,19 @@
 
 
     <Button
+        android:id="@+id/submitScoreButton"
+        android:text="@string/submitScore"
+        android:textColor="@android:color/black"
+        android:textSize="@dimen/text_size_button"
+        android:layout_height="@dimen/button_margin_large"
+        android:background="@drawable/buttonshape_gameplay"
+        android:layout_width="@dimen/button_margin_large"
+        android:layout_centerVertical="true"
+        android:layout_alignParentEnd="false"
+        android:layout_marginStart="@dimen/margin_end_button"
+        android:visibility="invisible" />
+
+    <Button
         android:id="@+id/startGameButton"
         android:text="@string/start_game"
         android:textColor="@android:color/black"
