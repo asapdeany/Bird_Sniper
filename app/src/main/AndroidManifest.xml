@@ -32,6 +32,9 @@
         <activity android:name="com.example.deansponholz.fish_game.InstructionActivity"
             android:screenOrientation="landscape">
         </activity>
+        <activity android:name="com.example.deansponholz.fish_game.HighscoreActivity"
+            android:screenOrientation="landscape">
+        </activity>
     </application>
 
 </manifest>

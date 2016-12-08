@@ -30,6 +30,7 @@ public class MenuFragment extends Fragment {
     Button play_button = null;
     Button about_button = null;
     Button instruction_button = null;
+    Button highscore_button = null;
 
     public SensorHandler sensorHandler = null;
     Display display;
@@ -56,6 +57,7 @@ public class MenuFragment extends Fragment {
         this.play_button = (Button) root.findViewById(R.id.play_button);
         this.about_button = (Button) root.findViewById(R.id.about_button);
         this.instruction_button = (Button) root.findViewById(R.id.instructions_button);
+        this.highscore_button = (Button) root.findViewById(R.id.highscore_button);
 
 
         play_button.setOnClickListener(new View.OnClickListener() {
@@ -78,6 +80,14 @@ public class MenuFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getActivity(), InstructionActivity.class);
+                getActivity().startActivity(intent);
+            }
+        });
+
+        highscore_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getActivity(), HighscoreActivity.class);
                 getActivity().startActivity(intent);
             }
         });

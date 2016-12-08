@@ -33,4 +33,5 @@
     <string name="menu">Menu</string>
     <string name="zero">0</string>
     <string name="submitScore">Submit Score!</string>
+    <string name="highscore_string">Highscore</string>
 </resources>
