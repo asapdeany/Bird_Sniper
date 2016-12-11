@@ -43,4 +43,5 @@
     <dimen name="margin_end_button">45dp</dimen>
     <dimen name="score_text_size_big">130sp</dimen>
     <dimen name="margin_button_fragment">124dp</dimen>
+    <dimen name="some_margin">185dp</dimen>
 </resources>

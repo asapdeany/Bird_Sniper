@@ -7,26 +7,26 @@
     android:background="@color/dodgerblue_two" >
 
 
+    <ImageView
+        android:layout_width="@dimen/about_button_width"
+        android:layout_height="@dimen/about_text_width"
+        android:background="@drawable/pencil_one"
+        android:id="@+id/tiltImage"
+        android:layout_marginStart="@dimen/margin_tv_top"
+        android:layout_centerVertical="true"
+        android:layout_alignParentStart="true" />
+
     <TextView
         android:layout_width="@dimen/gamebutton_II_height_LARGE"
         android:layout_height="wrap_content"
-        android:textSize="@dimen/instruction_title_text_size"
+        android:textSize="@dimen/text_size_button"
         android:text="@string/instruction_two"
         android:textColor="@android:color/white"
         android:textAlignment="center"
         android:id="@+id/second_instruction_screen_one"
-        android:layout_alignBottom="@+id/tiltImage"
-        android:layout_alignParentEnd="true"
-        android:layout_marginEnd="@dimen/gamebutton_II_height_LARGE" />
-
-    <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@drawable/pencil_one"
-        android:id="@+id/tiltImage"
-        android:layout_marginStart="@dimen/gamebutton_II_height_LARGE"
+        android:layout_marginEnd="@dimen/some_margin"
         android:layout_centerVertical="true"
-        android:layout_alignParentStart="true" />
+        android:layout_alignParentEnd="true" />
 
 
 </RelativeLayout>

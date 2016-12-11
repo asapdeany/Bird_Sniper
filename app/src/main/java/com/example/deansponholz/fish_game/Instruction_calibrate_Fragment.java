@@ -35,6 +35,7 @@ public class Instruction_calibrate_Fragment extends Fragment {
     public static float yOffset, xOffset;
 
     float fishX, fishY;
+    int circleRadius;
     float shipSpawnY;
 
     int lineX, lineY;
@@ -141,7 +142,7 @@ public class Instruction_calibrate_Fragment extends Fragment {
         }
         @Override
         public void onDraw(Canvas canvas){
-            canvas.drawCircle(width/2, height/2, 50, paint);
+            canvas.drawCircle(width/2, height/2, circleRadius, paint);
 
             fishX = (float) (-sensorHandler.xPos*15) + CalibrationFragment.xOffset;
             fishY = (float) (sensorHandler.yPos * 15) + CalibrationFragment.yOffset;
@@ -185,16 +186,18 @@ public class Instruction_calibrate_Fragment extends Fragment {
             Log.d("BigDevice", Double.toString(screenInches));
             Log.d("screenWidth", Integer.toString(width));
             Log.d("screenHeight", Integer.toString(height));
+            circleRadius = 90;
             shipSpawnY = (float)(height * 0.2);
             deviceCalibrateUp = 50;
             deviceCalibrateDown = 50;
-            fishSizeX = 90;
-            fishSizeY = 70;
+            fishSizeX = 140;
+            fishSizeY = 120;
             lineX = 50;
             lineY = 30;
 
         }
         if (screenInches < 6.0){
+            circleRadius = 50;
             Log.d("SmallDevice", Double.toString(screenInches));
             Log.d("screenWidth", Integer.toString(width));
             Log.d("screenHeight", Integer.toString(height));

@@ -15,6 +15,8 @@ import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.Rect;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.DisplayMetrics;
@@ -25,11 +27,27 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.Random;
+
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicNameValuePair;
+import org.json.JSONObject;
 
 /**
  * Created by deansponholz on 11/3/16.
@@ -57,10 +75,13 @@ public class HUDFragment extends Fragment {
     //Views and Score
     TextView score_TextView = null;
     //TextView hookCount_TextView = null;
+    EditText submit_name = null;
     Button menu_Button = null;
     Button startGame_Button = null;
     Button submitScore_Button = null;
     int gameScore, hookCount;
+    public static int user_score;
+    public static String user_name;
 
     //flip bitmap function
     public static final int FLIP_VERTICAL = 1;
@@ -97,6 +118,12 @@ public class HUDFragment extends Fragment {
     int hookOffsetX, hookOffsetY;
     int hookLeft, hookRight, hookTop, hookBottom;
 
+    //database
+    InputStream is=null;
+    String result=null;
+    String line=null;
+    int code;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_main, container, false);
@@ -115,6 +142,7 @@ public class HUDFragment extends Fragment {
         this.menu_Button = (Button) root.findViewById(R.id.menu_button);
         this.startGame_Button = (Button) root.findViewById(R.id.startGameButton);
         this.submitScore_Button = (Button) root.findViewById(R.id.submitScoreButton);
+        this.submit_name = (EditText) root.findViewById(R.id.submit_name);
 
         //Custom Draw View
         final HUDDrawView hudDrawView = new HUDDrawView(this.getActivity());
@@ -128,10 +156,13 @@ public class HUDFragment extends Fragment {
                 startGame_Button.setClickable(false);
                 startGame_Button.setVisibility(View.INVISIBLE);
                 submitScore_Button.setVisibility(View.INVISIBLE);
+                submit_name.setVisibility(View.INVISIBLE);
                 hookCount = 0;
                 gameScore = 0;
                 hook = hookNormal;
                 hudDrawView.startGame();
+                submitScore_Button.setText(getResources().getText(R.string.submitScore));
+                submitScore_Button.setClickable(true);
 
             }
         });
@@ -144,9 +175,80 @@ public class HUDFragment extends Fragment {
             }
         });
 
+        submitScore_Button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+
+                //if empty
+                if (submit_name.getText().toString().trim().length() <= 2){
+                    submitScore_Button.setBackgroundColor(Color.RED);
+                    final Handler handler = new Handler();
+                    handler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            submitScore_Button.setBackground(getResources().getDrawable(R.drawable.buttonshape_gameplay));
+                        }
+                    }, 1000);
+                    Toast.makeText(getActivity(), R.string.too_short,
+                            Toast.LENGTH_LONG).show();
+
+                }
+
+                else if (submit_name.getText().toString().trim().length() > 2){
+
+                    user_name = submit_name.getText().toString().trim();
+                    Log.d("inputnameHUD", user_name);
+                    user_score = gameScore;
+                    isOnline();
+                    //insert();
+                }
+            }
+        });
+
 
         return root;
     }
+    public void isOnline() {
+        ConnectivityManager cm = (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo netInfo = cm.getActiveNetworkInfo();
+        if (netInfo != null && netInfo.isConnectedOrConnecting()) {
+            new InsertTask().execute();
+            submitScore_Button.setBackground(getResources().getDrawable(R.drawable.green_circle));
+            submitScore_Button.setText("Success");
+            submit_name.setVisibility(View.INVISIBLE);
+            submitScore_Button.setClickable(false);
+        }
+        else {
+            Toast.makeText(getActivity(), R.string.no_connection, Toast.LENGTH_LONG).show();
+        }
+    }
+    /*
+
+    public void insert(){
+        ArrayList<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
+
+        nameValuePairs.add(new BasicNameValuePair("user_name", user_name));
+        nameValuePairs.add(new BasicNameValuePair("user_score", Integer.toString(user_score)));
+        try
+        {
+            HttpClient httpclient = new DefaultHttpClient();
+            HttpPost httppost = new HttpPost("http://cs-linuxlab-30/db_insert.php");
+            httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
+            HttpResponse response = httpclient.execute(httppost);
+            HttpEntity entity = response.getEntity();
+            is = entity.getContent();
+            Log.e("pass 1", "connection success ");
+        }
+        catch(Exception e)
+        {
+            Log.e("Fail 1", e.toString());
+            Toast.makeText(getActivity(), "Invalid IP Address",
+                    Toast.LENGTH_LONG).show();
+        }
+
+    }
+    */
 
     public class HUDDrawView extends View{
 
@@ -261,6 +363,9 @@ public class HUDFragment extends Fragment {
 
                     submitScore_Button.setVisibility(VISIBLE);
                     submitScore_Button.setClickable(true);
+
+                    submit_name.setVisibility(VISIBLE);
+                    gameStarted = false;
                 }
 
                 @Override
@@ -777,7 +882,7 @@ public class HUDFragment extends Fragment {
         Matrix matrix = new Matrix();
         // if vertical
         if(type == FLIP_VERTICAL) {
-            // y = y * -1
+            // user_score = user_score * -1
             matrix.preScale(1.0f, -1.0f);
         }
         // if horizontal
@@ -795,13 +900,17 @@ public class HUDFragment extends Fragment {
     /** Collision Detection for FISH & HOOK
      * @param bitmap1 First bitmap
      * @param x1 x-position of bitmap1 on screen.
-     * @param y1 y-position of bitmap1 on screen.
+     * @param y1 user_score-position of bitmap1 on screen.
      * @param bitmap2 Second bitmap.
      * @param x2 x-position of bitmap2 on screen.
-     * @param y2 y-position of bitmap2 on screen.
+     * @param y2 user_score-position of bitmap2 on screen.
      */
     public boolean isCollisionDetectedFishHook(Bitmap bitmap1, int x1, int y1,
                                                Bitmap bitmap2, int x2, int y2) {
+
+        if (gameStarted == false){
+            return false;
+        }
 
         //Rect bounds1 = new Rect((int)(fishX) + 10, (int)fishY + 10, (int) fishX +bitmap1.getWidth() - 10, (int)fishY + bitmap1.getHeight() - 10);
         Rect bounds1 = new Rect((int)(spawnedFishXPosition) + 10, (int) spawnedFishYPosition + 10, (int) spawnedFishXPosition + bitmap1.getWidth()-10, (int) spawnedFishYPosition + bitmap1.getHeight()-10);
@@ -826,13 +935,17 @@ public class HUDFragment extends Fragment {
     /** Collision Detection for FISH & HOOK
      * @param bitmap1 First bitmap
      * @param x1 x-position of bitmap1 on screen.
-     * @param y1 y-position of bitmap1 on screen.
+     * @param y1 user_score-position of bitmap1 on screen.
      * @param bitmap2 Second bitmap.
      * @param x2 x-position of bitmap2 on screen.
-     * @param y2 y-position of bitmap2 on screen.
+     * @param y2 user_score-position of bitmap2 on screen.
      */
     public boolean isCollisionDetectedSharkHook(Bitmap bitmap1, int x1, int y1,
                                                Bitmap bitmap2, int x2, int y2) {
+
+        if (gameStarted == false){
+            return false;
+        }
 
         //Rect bounds1 = new Rect((int)(fishX) + 10, (int)fishY + 10, (int) fishX +bitmap1.getWidth() - 10, (int)fishY + bitmap1.getHeight() - 10);
         Rect bounds1 = new Rect((int)(spawnedSharkXPosition) + 10, (int) spawnedSharkYPosition + 10, (int) spawnedSharkXPosition + bitmap1.getWidth()-10, (int) spawnedSharkYPosition + bitmap1.getHeight()-10);
@@ -858,13 +971,17 @@ public class HUDFragment extends Fragment {
     /** Collision Detection for SHIP & HOOK
      * @param bitmap1 First bitmap
      * @param x1 x-position of bitmap1 on screen.
-     * @param y1 y-position of bitmap1 on screen.
+     * @param y1 user_score-position of bitmap1 on screen.
      * @param bitmap2 Second bitmap.
      * @param x2 x-position of bitmap2 on screen.
-     * @param y2 y-position of bitmap2 on screen.
+     * @param y2 user_score-position of bitmap2 on screen.
      */
     public boolean isCollisionShipHook(Bitmap bitmap1, int x1, int y1,
                                        Bitmap bitmap2, int x2, int y2) {
+
+        if (gameStarted == false){
+            return false;
+        }
 
 
         Rect bounds1 = new Rect((int)(shipXPosition) + 10, (int)shipYPosition + 10, (int) shipXPosition + bitmap1.getWidth()-10, (int)shipYPosition + bitmap1.getHeight()-10);

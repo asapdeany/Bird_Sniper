@@ -14,8 +14,7 @@
         android:layout_centerHorizontal="true"
         android:id="@+id/imageView3"
         android:background="@drawable/instruction_gameplay"
-        android:adjustViewBounds="false"
-        android:scaleType="fitXY" />
+        android:adjustViewBounds="false" />
 
     <TextView
         android:text="@string/instruction_gp_two"

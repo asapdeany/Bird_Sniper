@@ -38,7 +38,8 @@
         android:text="@string/zero"
         android:layout_marginLeft="@dimen/margin_score_center"
         android:layout_centerVertical="true"
-        android:layout_centerHorizontal="true" />
+        android:layout_centerHorizontal="true"
+        android:cursorVisible="true" />
 
     <Button
         android:id="@+id/startGameButton"
@@ -51,5 +52,18 @@
         android:layout_centerVertical="true"
         android:layout_toEndOf="@+id/menu_button"
         android:layout_marginStart="@dimen/margin_button_fragment" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="textPersonName"
+        android:digits="abcdefghijklmnopqrstuvwxyz"
+        android:hint="@string/name_input"
+        android:visibility="invisible"
+        android:layout_marginLeft="@dimen/activity_vertical_margin"
+        android:layout_alignBottom="@+id/scoreTextView"
+        android:layout_alignStart="@+id/submitScoreButton"
+        android:id="@+id/submit_name"
+        android:textColorHint="@android:color/white" />
 
 </RelativeLayout>

@@ -15,7 +15,7 @@
 
         <Button
             android:text="@string/instructions"
-            android:background="@drawable/buttonshape_menu"
+            android:background="@drawable/buttonshape_menu_image"
             android:layout_width="@dimen/button_size_layout_large"
             android:layout_height="@dimen/button_size_layout_large"
             android:id="@+id/instructions_button"
@@ -25,7 +25,7 @@
         <Button
             android:text="@string/play"
             android:id="@+id/play_button"
-            android:background="@drawable/buttonshape_menu"
+            android:background="@drawable/buttonshape_menu_image"
             android:layout_width="@dimen/button_size_layout_large"
             android:layout_height="150dp"
             android:textSize="@dimen/about_text_size"
@@ -35,7 +35,7 @@
 
         <Button
             android:text="@string/about"
-            android:background="@drawable/buttonshape_menu"
+            android:background="@drawable/buttonshape_menu_image"
             android:layout_width="@dimen/button_size_layout_large"
             android:layout_height="@dimen/button_size_layout_large"
             android:id="@+id/about_button"
@@ -51,11 +51,11 @@
         <Button
             android:text="@string/highscore_string"
             android:background="@drawable/buttonshape_menu"
-            android:layout_width="wrap_content"
-            android:layout_height="@android:dimen/notification_large_icon_height"
+            android:layout_width="@dimen/text_view_gamescreen_top_margin"
+            android:layout_height="wrap_content"
             android:id="@+id/highscore_button"
-            android:textSize="@dimen/about_text_size"
-            android:textColor="@android:color/white"/>
+            android:textSize="@dimen/about_text_size_second"
+            android:textColor="?android:attr/colorPrimaryDark"/>
     </LinearLayout>
 
 </RelativeLayout>

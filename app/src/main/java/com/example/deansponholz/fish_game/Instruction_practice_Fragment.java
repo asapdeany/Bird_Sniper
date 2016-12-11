@@ -147,8 +147,8 @@ public class Instruction_practice_Fragment extends Fragment {
             Log.d("BigDevice", Double.toString(screenInches));
             Log.d("screenWidth", Integer.toString(width));
             Log.d("screenHeight", Integer.toString(height));
-            fishSizeX = 90;
-            fishSizeY = 70;
+            fishSizeX = 150;
+            fishSizeY = 130;
 
 
         }
@@ -156,8 +156,8 @@ public class Instruction_practice_Fragment extends Fragment {
             Log.d("SmallDevice", Double.toString(screenInches));
             Log.d("screenWidth", Integer.toString(width));
             Log.d("screenHeight", Integer.toString(height));
-            fishSizeX = 80;
-            fishSizeY = 60;
+            fishSizeX = 120;
+            fishSizeY = 100;
         }
 
 

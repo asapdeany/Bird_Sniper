@@ -4,13 +4,26 @@
     android:layout_height="match_parent"
     android:id="@+id/fragment_calibrate">
 
+    <TextView
+        android:text="@string/instruction_three"
+        android:layout_width="@dimen/gamebutton_II_height_LARGE"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/gamebutton_ll_height_"
+        android:textSize="@dimen/big_text_size"
+        android:id="@+id/first_instruction_screen_one"
+        android:layout_centerVertical="true"
+        android:layout_alignParentEnd="true"
+        android:textColor="@android:color/black"
+        android:textAlignment="center" />
+
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/activity_vertical_margin"
         android:layout_centerVertical="true"
         android:layout_alignParentStart="true"
-        android:layout_marginLeft="@dimen/activity_vertical_margin">
+        android:layout_marginStart="@dimen/gamebutton_ll_height_">
 
         <Button
             android:text="@string/up_arrow"
@@ -53,16 +66,4 @@
             android:shadowRadius="0"
             android:id="@+id/down_button" />
     </LinearLayout>
-
-    <TextView
-        android:text="@string/instruction_three"
-        android:layout_width="@dimen/gamebutton_II_height_LARGE"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="@dimen/margin_top_gs"
-        android:textSize="@dimen/instruction_title_text_size"
-        android:id="@+id/first_instruction_screen_one"
-        android:layout_centerVertical="true"
-        android:layout_alignParentEnd="true"
-        android:textColor="@android:color/black"
-        android:textAlignment="center" />
 </RelativeLayout>

@@ -18,7 +18,7 @@ import java.text.DecimalFormat;
 import java.util.Timer;
 import java.util.TimerTask;
 
-
+//sensor fusion taken from https://github.com/joshuajnoble/MarioCard/blob/master/processingAndroid/MarioKard/SensorFuse.pde
 /**
  * Created by deansponholz on 11/3/16.
  */
@@ -257,7 +257,7 @@ public class SensorData implements SensorEventListener {
         xM[3] = 0.0f; xM[4] = cosX; xM[5] = sinX;
         xM[6] = 0.0f; xM[7] = -sinX; xM[8] = cosX;
 
-        // rotation about y-axis (roll)
+        // rotation about user_score-axis (roll)
         yM[0] = cosY; yM[1] = 0.0f; yM[2] = sinY;
         yM[3] = 0.0f; yM[4] = 1.0f; yM[5] = 0.0f;
         yM[6] = -sinY; yM[7] = 0.0f; yM[8] = cosY;
@@ -267,7 +267,7 @@ public class SensorData implements SensorEventListener {
         zM[3] = -sinZ; zM[4] = cosZ; zM[5] = 0.0f;
         zM[6] = 0.0f; zM[7] = 0.0f; zM[8] = 1.0f;
 
-        // rotation order is y, x, z (roll, pitch, azimuth)
+        // rotation order is user_score, x, z (roll, pitch, azimuth)
         float[] resultMatrix = matrixMultiplication(xM, yM);
         resultMatrix = matrixMultiplication(zM, resultMatrix);
         return resultMatrix;

@@ -8,8 +8,8 @@
     <string name="about_roll_string">Roll (y-axis rotation):</string>
     <string name="instruction_intro">Welcome to Fishin\' Time!</string>
     <string name="instruction_one">This game works by tilting the device. Touching the screen does nothing during gameplay.</string>
-    <string name="instruction_two">Now tilt the device to the orientation you wish to play in.</string>
-    <string name="instruction_three">Use the arrows to move the fish inside the circle and press start.</string>
+    <string name="instruction_two">Tilt the device to the orientation you wish to play in.</string>
+    <string name="instruction_three">Use the arrows to move the shark inside the circle and press start.</string>
     <string name="instruction_four">Objective: Catch as many fish as possible before the ship reaches the other side.</string>
     <string name="instruction_gp_one">Tilt device to move the hook and catch fish.</string>
     <string name="instruction_gp_two">Return hooked fish to the boat to increase score.</string>
@@ -33,5 +33,9 @@
     <string name="menu">Menu</string>
     <string name="zero">0</string>
     <string name="submitScore">Submit Score!</string>
-    <string name="highscore_string">Highscore</string>
+    <string name="highscore_string">Highscores</string>
+    <string name="name_input">Input Name</string>
+    <string name="loading">Loading...</string>
+    <string name="no_connection">No Internet Connection</string>
+    <string name="too_short">Name Length Too Short</string>
 </resources>

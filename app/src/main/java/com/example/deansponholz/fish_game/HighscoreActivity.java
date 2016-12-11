@@ -1,5 +1,8 @@
 package com.example.deansponholz.fish_game;
 
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -26,7 +29,8 @@ public class HighscoreActivity extends AppCompatActivity implements HighscoreTas
 
 
         //highscoreTask.execute();
-        new HighscoreTask(this).execute();
+        isOnline();
+
 
 
 
@@ -37,7 +41,17 @@ public class HighscoreActivity extends AppCompatActivity implements HighscoreTas
     public void processFinish(String output){
         //Here you will receive the result fired from async class
         //of onPostExecute(result) method.
-        highscore_textview.setText(output);
+        highscore_textview.setText(output.trim());
     }
 
+    public void isOnline() {
+        ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo netInfo = cm.getActiveNetworkInfo();
+        if (netInfo != null && netInfo.isConnectedOrConnecting()) {
+            new HighscoreTask(this).execute();
+        }
+        else {
+            highscore_textview.setText(R.string.no_connection);
+        }
+    }
 }
