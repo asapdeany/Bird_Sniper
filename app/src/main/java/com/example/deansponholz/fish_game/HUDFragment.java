@@ -15,6 +15,9 @@ import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.Rect;
+import android.media.AudioManager;
+import android.media.MediaPlayer;
+import android.media.SoundPool;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
@@ -57,6 +60,7 @@ public class HUDFragment extends Fragment {
 
     //theme song
     //https://www.youtube.com/watch?v=7-G0kK4FIdM
+    MediaPlayer mediaPlayer;
 
     //Dimension specifics, Fragment Layout, and Sensor Calibration
     RelativeLayout fragment_main;
@@ -144,6 +148,8 @@ public class HUDFragment extends Fragment {
         this.submitScore_Button = (Button) root.findViewById(R.id.submitScoreButton);
         this.submit_name = (EditText) root.findViewById(R.id.submit_name);
 
+        //sound
+        mediaPlayer = MediaPlayer.create(root.getContext(), R.raw.background_waves);
         //Custom Draw View
         final HUDDrawView hudDrawView = new HUDDrawView(this.getActivity());
         fragment_main.addView(hudDrawView);
@@ -163,6 +169,8 @@ public class HUDFragment extends Fragment {
                 hudDrawView.startGame();
                 submitScore_Button.setText(getResources().getText(R.string.submitScore));
                 submitScore_Button.setClickable(true);
+                mediaPlayer.start();
+                //soundPool.play(backgroundSound, myVolume, myVolume, 1, -1, 0.5f);
 
             }
         });
@@ -215,7 +223,7 @@ public class HUDFragment extends Fragment {
         if (netInfo != null && netInfo.isConnectedOrConnecting()) {
             new InsertTask().execute();
             submitScore_Button.setBackground(getResources().getDrawable(R.drawable.green_circle));
-            submitScore_Button.setText("Success");
+            submitScore_Button.setText(R.string.big_success);
             submit_name.setVisibility(View.INVISIBLE);
             submitScore_Button.setClickable(false);
         }
@@ -802,9 +810,9 @@ public class HUDFragment extends Fragment {
         height = size.y;
 
         if (screenInches > 6.0){
-            Log.d("BigDevice", Double.toString(screenInches));
-            Log.d("screenWidth", Integer.toString(width));
-            Log.d("screenHeight", Integer.toString(height));
+            //Log.d("BigDevice", Double.toString(screenInches));
+            //Log.d("screenWidth", Integer.toString(width));
+            //Log.d("screenHeight", Integer.toString(height));
             shipSpawnY = (float)(height * 0.055);
             fishSizeX = 80;
             fishSizeY = 60;
@@ -839,9 +847,9 @@ public class HUDFragment extends Fragment {
 
         }
         if (screenInches < 6.0){
-            Log.d("SmallDevice", Double.toString(screenInches));
-            Log.d("screenWidth", Integer.toString(width));
-            Log.d("screenHeight", Integer.toString(height));
+            //Log.d("SmallDevice", Double.toString(screenInches));
+            //Log.d("screenWidth", Integer.toString(width));
+            //Log.d("screenHeight", Integer.toString(height));
             shipSpawnY = (float)(height * 0.055);
             fishSizeX = 70;
             fishSizeY = 50;
@@ -1021,6 +1029,7 @@ public class HUDFragment extends Fragment {
         if (gameStarted == true){
             spawnHandler.removeCallbacks(spawnFish);
         }
+        mediaPlayer.stop();
         super.onResume();
     }
 

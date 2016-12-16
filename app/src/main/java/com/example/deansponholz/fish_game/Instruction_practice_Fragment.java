@@ -144,18 +144,18 @@ public class Instruction_practice_Fragment extends Fragment {
 
 
         if (screenInches > 6.0){
-            Log.d("BigDevice", Double.toString(screenInches));
-            Log.d("screenWidth", Integer.toString(width));
-            Log.d("screenHeight", Integer.toString(height));
+            //Log.d("BigDevice", Double.toString(screenInches));
+            //Log.d("screenWidth", Integer.toString(width));
+            //Log.d("screenHeight", Integer.toString(height));
             fishSizeX = 150;
             fishSizeY = 130;
 
 
         }
         if (screenInches < 6.0){
-            Log.d("SmallDevice", Double.toString(screenInches));
-            Log.d("screenWidth", Integer.toString(width));
-            Log.d("screenHeight", Integer.toString(height));
+            //Log.d("SmallDevice", Double.toString(screenInches));
+            //Log.d("screenWidth", Integer.toString(width));
+            //Log.d("screenHeight", Integer.toString(height));
             fishSizeX = 120;
             fishSizeY = 100;
         }

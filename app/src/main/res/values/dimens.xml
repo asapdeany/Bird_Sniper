@@ -14,7 +14,7 @@
     <dimen name="button_margin_large">130dp</dimen>
     <dimen name="button_size_layout_large">150dp</dimen>
     <dimen name="about_text_width">220dp</dimen>
-    <dimen name="about_button_width">380dp</dimen>
+    <dimen name="about_button_width">370dp</dimen>
     <dimen name="about_large_TextSize">13.5sp</dimen>
     <dimen name="margin_top">30dp</dimen>
     <dimen name="text_view_gamescreen_end_margin">95dp</dimen>
@@ -44,4 +44,6 @@
     <dimen name="score_text_size_big">130sp</dimen>
     <dimen name="margin_button_fragment">124dp</dimen>
     <dimen name="some_margin">185dp</dimen>
+    <dimen name="margin_yeah">142dp</dimen>
+    <dimen name="amrgin_top_yee">58dp</dimen>
 </resources>

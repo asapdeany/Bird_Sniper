@@ -93,11 +93,11 @@ public class InsertTask extends AsyncTask {
 
             if(code==1)
             {
-                Log.d("Inserted Successfully","yaay");
+                Log.d("Inserted Successfully","woot!");
             }
             else
             {
-                Log.d("FAILURE INSERTING","fuq");
+                Log.d("FAILURE INSERTING","dammit");
             }
         }
         catch(Exception e)

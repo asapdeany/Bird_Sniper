@@ -78,14 +78,14 @@ public class CalibrationFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 yOffset = yOffset - deviceCalibrateUp;
-                Log.d("yOffsetbefore", Double.toString(yOffset));
+                //Log.d("yOffsetbefore", Double.toString(yOffset));
             }
         }));
 
         center_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.d("yOffsetbefore", Double.toString(yOffset));
+                //Log.d("yOffsetbefore", Double.toString(yOffset));
                 Intent intent = new Intent(getActivity(), HUDActivity.class);
                 getActivity().startActivity(intent);
             }
@@ -96,7 +96,7 @@ public class CalibrationFragment extends Fragment {
             public void onClick(View v) {
                 yOffset = yOffset + deviceCalibrateDown;
                 //yOffset = height / 2;
-                Log.d("yOffsetbefore", Double.toString(yOffset));
+                //Log.d("yOffsetbefore", Double.toString(yOffset));
             }
         }));
 
@@ -184,9 +184,9 @@ public class CalibrationFragment extends Fragment {
 
 
         if (screenInches > 6.0){
-            Log.d("BigDevice", Double.toString(screenInches));
-            Log.d("screenWidth", Integer.toString(width));
-            Log.d("screenHeight", Integer.toString(height));
+            //Log.d("BigDevice", Double.toString(screenInches));
+            //Log.d("screenWidth", Integer.toString(width));
+            //Log.d("screenHeight", Integer.toString(height));
             circleRadius = 90;
             shipSpawnY = (float)(height * 0.2);
             deviceCalibrateUp = 70;
@@ -198,9 +198,9 @@ public class CalibrationFragment extends Fragment {
         }
         
         if (screenInches < 6.0){
-            Log.d("SmallDevice", Double.toString(screenInches));
-            Log.d("screenWidth", Integer.toString(width));
-            Log.d("screenHeight", Integer.toString(height));
+            //Log.d("SmallDevice", Double.toString(screenInches));
+            //Log.d("screenWidth", Integer.toString(width));
+            //Log.d("screenHeight", Integer.toString(height));
             circleRadius = 50;
             shipSpawnY = (float)(height * 0.1);
             deviceCalibrateUp = 50;

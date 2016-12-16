@@ -22,10 +22,10 @@
     <string name="practice_instructions_two">Practice moving the shark around the screen!</string>
     <string name="play">Play</string>
     <string name="about">About</string>
-    <string name="about_paragraph">Fishin\' Time is an android game application created by Dean Sponholz and Josh LastName.
-        To avoid both, gyro drift and noisy orientation, the gyroscope output is applied only for orientation changes in short time intervals, while the magnetometer/acceletometer data is used as support information over long periods of time.
-        This is equivalent tolow-pass filtering of the accelerometer and magnetic field sensor signals and high-pass filtering of the gyroscope signals.
-        The resulting filter is called a Kalman Filter</string>
+    <string name="about_paragraph">Fishin\' Time is an android game application created by Dean Sponholz and Josh Schappel.
+        This game works by fusing together the yaw, pitch, and roll from the Accelerometer, Magnetometer, and Gyroscope sensors to move a fish hook around the screen.
+        To avoid both, gyro drift and noisy orientation, the gyroscope output is applied only for orientation changes in short time intervals, while the magnetometer/accelerometer data is used as support information over long periods of time.
+        The resulting fusion is called a Kalman Filter.</string>
     <string name="start">Start</string>
     <string name="bottom_arrow">↓</string>
     <string name="up_arrow">↑</string>
@@ -38,4 +38,5 @@
     <string name="loading">Loading...</string>
     <string name="no_connection">No Internet Connection</string>
     <string name="too_short">Name Length Too Short</string>
+    <string name="big_success">Success</string>
 </resources>

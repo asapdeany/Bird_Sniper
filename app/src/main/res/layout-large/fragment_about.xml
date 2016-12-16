@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical" android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:id="@+id/fragment_about">
@@ -10,8 +11,8 @@
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_alignParentStart="true"
-        android:layout_marginStart="@dimen/gamebutton_II_height_LARGE"
-        android:layout_marginTop="@dimen/button_size_widthd">
+        android:layout_marginStart="@dimen/margin_yeah"
+        android:layout_marginTop="@dimen/amrgin_top_yee">
 
         <LinearLayout
             android:orientation="horizontal" android:layout_width="match_parent"
@@ -33,21 +34,24 @@
                         android:layout_height="wrap_content"
                         android:id="@+id/accel_mag_radio"
                         android:layout_weight="1"
-                        android:textColor="@android:color/white" />
+                        android:textColor="@android:color/white"
+                        android:textSize="@dimen/about_text_size" />
                     <RadioButton
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:id="@+id/gyro_radio"
                         android:layout_weight="1"
                         android:text="@string/gyro_about"
-                        android:textColor="@android:color/white" />
+                        android:textColor="@android:color/white"
+                        android:textSize="@dimen/about_text_size"/>
                     <RadioButton
                         android:text="@string/fusion_orientation_about"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:id="@+id/fusion_radio"
                         android:layout_weight="1"
-                        android:textColorLink="@android:color/white" />
+                        android:textColorLink="@android:color/white"
+                        android:textSize="@dimen/about_text_size"/>
                 </RadioGroup>
 
                 <LinearLayout
@@ -125,13 +129,13 @@
             </LinearLayout>
 
             <TextView
-                android:layout_width="@dimen/about_text_width"
+                android:layout_width="@dimen/about_button_width"
                 android:layout_height="wrap_content"
                 android:id="@+id/textView"
-                android:textSize="@dimen/about_large_TextSize"
+                android:textSize="@dimen/about_text_size"
                 android:text="@string/about_paragraph"
-                android:layout_marginTop="@dimen/activity_horizontal_margin"
-                android:textColor="@android:color/white" />
+                android:textColor="@android:color/white"
+                android:layout_marginTop="@android:dimen/notification_large_icon_height" />
 
         </LinearLayout>
     </LinearLayout>

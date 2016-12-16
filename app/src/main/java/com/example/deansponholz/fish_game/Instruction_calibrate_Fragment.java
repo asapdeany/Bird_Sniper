@@ -74,14 +74,14 @@ public class Instruction_calibrate_Fragment extends Fragment {
             @Override
             public void onClick(View v) {
                 CalibrationFragment.yOffset = CalibrationFragment.yOffset - deviceCalibrateUp;
-                Log.d("yOffsetbefore", Double.toString(yOffset));
+                //Log.d("yOffsetbefore", Double.toString(yOffset));
             }
         }));
 
         center_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.d("yOffsetbefore", Double.toString(yOffset));
+                //Log.d("yOffsetbefore", Double.toString(yOffset));
                 Intent intent = new Intent(getActivity(), HUDActivity.class);
                 getActivity().startActivity(intent);
             }
@@ -92,7 +92,7 @@ public class Instruction_calibrate_Fragment extends Fragment {
             public void onClick(View v) {
                 CalibrationFragment.yOffset = CalibrationFragment.yOffset + deviceCalibrateDown;
                 //yOffset = height / 2;
-                Log.d("yOffsetbefore", Double.toString(yOffset));
+                //Log.d("yOffsetbefore", Double.toString(yOffset));
             }
         }));
         return root;
@@ -183,9 +183,9 @@ public class Instruction_calibrate_Fragment extends Fragment {
 
 
         if (screenInches > 6.0){
-            Log.d("BigDevice", Double.toString(screenInches));
-            Log.d("screenWidth", Integer.toString(width));
-            Log.d("screenHeight", Integer.toString(height));
+            //Log.d("BigDevice", Double.toString(screenInches));
+            //Log.d("screenWidth", Integer.toString(width));
+            //Log.d("screenHeight", Integer.toString(height));
             circleRadius = 90;
             shipSpawnY = (float)(height * 0.2);
             deviceCalibrateUp = 50;
@@ -198,9 +198,9 @@ public class Instruction_calibrate_Fragment extends Fragment {
         }
         if (screenInches < 6.0){
             circleRadius = 50;
-            Log.d("SmallDevice", Double.toString(screenInches));
-            Log.d("screenWidth", Integer.toString(width));
-            Log.d("screenHeight", Integer.toString(height));
+            //Log.d("SmallDevice", Double.toString(screenInches));
+            //Log.d("screenWidth", Integer.toString(width));
+            //Log.d("screenHeight", Integer.toString(height));
             shipSpawnY = (float)(height * 0.1);
             deviceCalibrateUp = 35;
             deviceCalibrateDown = 35;
